@@ -14,6 +14,7 @@ app.use(bodyParser.json())
 app.use('/api/emails', require('./routes/emails.js'))
 app.use('/api/exercices', require('./routes/exercices.js'))
 app.use('/api/tokens', require('./routes/tokens.js'))
+app.use('/api/users', require('./routes/users.js'))
 
 app.listen(app.get('port'), ()=>{
     console.log('server on port' + app.get('port'))

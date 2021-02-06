@@ -48,6 +48,25 @@ exports.get_exercices_by_category = function(req, res){
         res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 }
+
+exports.get_popular_exercices = function(req, res){
+    let response = {
+        code:STATUS_RESPONSE.ERROR,
+        status:'Error'
+    }
+
+    Exercice.getPopularExercices(function(err, exercices) {
+        if (err){
+            res.status(STATUS_RESPONSE.ERROR).json(response)
+        }
+        response = {
+            code:STATUS_RESPONSE.OK,
+            category:category,
+            exercices:exercices
+        }
+        res.json(response)
+    })
+}
   
 exports.list_all_exercices = function(req, res) {
     Exercice.getAllExercices(function(err, exercices) {
@@ -69,10 +88,8 @@ exports.list_all_exercices = function(req, res) {
 }
 
 exports.create_exercice = function(req, res) {
-    console.log(req.body)
     let exercice = new Exercice(req.body);
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
-    console.log(exercice)
      if(!exercice.title || !exercice.description){
         response.message = 'Please provide title/description'
         res.status(STATUS_RESPONSE.ERROR).json(response)
@@ -80,7 +97,7 @@ exports.create_exercice = function(req, res) {
     else{
         Exercice.createExercice(exercice, function(err, exerice) {
             if (err){
-                res.status(STATUS_RESPONSE.ERROR),json(response);
+                res.status(STATUS_RESPONSE.ERROR).json(response);
             }
             response = {code:STATUS_RESPONSE.OK, exercice_id:exerice}
             res.status(STATUS_RESPONSE.OK).json(response)

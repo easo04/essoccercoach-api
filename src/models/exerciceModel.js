@@ -10,7 +10,7 @@ let Exercice = function (exercice){
     this.nbPlayers = exercice.nbPlayers
     this.time = exercice.time
     this.category = exercice.category
-    this.popular = exercice.popular
+    this.popular = exercice.popular ? 1 : 0
     this.image_url = exercice.image_url
     this.image_id = exercice.image_id
 }
@@ -40,6 +40,17 @@ Exercice.getExerciceById = function (exerciceId, result) {
 }
 Exercice.getAllExercices = function(result) {
     sql.query("SELECT * FROM exercices ORDER BY created_at DESC", function (err, res) {
+        if(err) {
+            console.log("error: ", err)
+            result(null, err)
+        }
+        else{
+            result(null, res)
+        }
+    });   
+}
+Exercice.getPopularExercices = function(result) {
+    sql.query("SELECT * FROM exercices WHERE popular = 1 ORDER BY created_at DESC", function (err, res) {
         if(err) {
             console.log("error: ", err)
             result(null, err)

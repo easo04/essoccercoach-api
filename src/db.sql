@@ -47,3 +47,18 @@ CREATE TABLE exercices (
 );
 
 DESCRIBE exercices;
+
+CREATE TABLE users (
+    id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    first_name CHAR(50) NOT NULL,
+    last_name CHAR(50) NOT NULL,
+    user_name CHAR(30),
+    email CHAR(100) NOT NULL,
+    password CHAR(255) NOT NULL,
+    subscription ENUM('admin', 'premium', 'middle', 'free'),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    image_url VARCHAR(300),
+    image_id VARCHAR(300)
+);
+
+DESCRIBE users;
