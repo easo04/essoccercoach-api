@@ -30,3 +30,20 @@ BEGIN
 
     SELECT _id AS id;
 END
+
+CREATE TABLE exercices (
+    id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(300) NOT NULL,
+    description VARCHAR(300) NOT NULL,
+    disposition VARCHAR(300),
+    objectifs VARCHAR(300),
+    nbPlayers INT,
+    time VARCHAR(10),
+    category ENUM('offensif', 'deffensif', 'rondo', 'tactique', 'physique', 'gardien'),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    popular BOOLEAN DEFAULT FALSE,
+    image_url VARCHAR(300),
+    image_id VARCHAR(300)
+);
+
+DESCRIBE exercices;
