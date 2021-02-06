@@ -86,3 +86,20 @@ exports.create_exercice = function(req, res) {
         })
     }
 }
+
+exports.delete_exercice = function(req, res) {
+    Exercice.remove(req.params.id, function(err, exercice) {
+        let response = {
+            code:STATUS_RESPONSE.ERROR,
+            status:'Error'
+        }
+        if (err){
+            res.status(STATUS_RESPONSE.ERROR).json(response)
+        }
+        response = {
+            code:STATUS_RESPONSE.OK,
+            message:'exercice deleted'
+        }
+        res.json(response)
+    })
+}
