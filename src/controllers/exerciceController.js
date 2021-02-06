@@ -69,9 +69,10 @@ exports.list_all_exercices = function(req, res) {
 }
 
 exports.create_exercice = function(req, res) {
+    console.log(req.body)
     let exercice = new Exercice(req.body);
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
-  
+    console.log(exercice)
      if(!exercice.title || !exercice.description){
         response.message = 'Please provide title/description'
         res.status(STATUS_RESPONSE.ERROR).json(response)

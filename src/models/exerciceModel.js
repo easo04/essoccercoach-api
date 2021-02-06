@@ -1,10 +1,6 @@
 'user strict'
 const sql = require('../database')
 
-const INSERT_EXERCICE_QUERY = 'INSERT INTO exercices (title, description, disposition, objectifs, nbPlayers, ' +
-                                'time, category, popular, image_url, image_id' +
-                                ') VALUES (?,?,?,?,?,?,?,?,?,?);'
-
 //Exercice object constructor
 let Exercice = function (exercice){
     this.title = exercice.title
@@ -16,12 +12,12 @@ let Exercice = function (exercice){
     this.category = exercice.category
     this.popular = exercice.popular
     this.image_url = exercice.image_url
-    this.image_id = exercice.task.image_id
+    this.image_id = exercice.image_id
 }
 
 //statics functions
 Exercice.createExercice = function (newExercices, result) {    
-    sql.query("INSERT INTO exercices SET ?", newExercices, function (err, res) {       
+    sql.query('INSERT INTO exercices set ?', newExercices, function (err, res) {       
         if(err) {
             console.log("error: ", err)
             result(err, null)
