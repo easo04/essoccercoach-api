@@ -2,41 +2,23 @@ const express = require('express')
 const router = express.Router()
 const mySqlConnection = require('../database')
 
-const STATUS_RESPONSE = {
-    OK:200,
-    ERROR:500
-}
+let exerciceController = require('../controllers/exerciceController');
 
 const INSERT_EXERCICE_QUERY = 'INSERT INTO exercices (title, description, disposition, objectifs, nbPlayers, ' +
                                 'time, category, popular, image_url, image_id' +
                                 ') VALUES (?,?,?,?,?,?,?,?,?,?);'
 
-router.get('/', (req, res) =>{
-    mySqlConnection.query('SELECT * FROM exercices', (err, rows, fields) =>{
-        let response
-        if(!err){
-            response = {
-                code:STATUS_RESPONSE.OK,
-                exercices:rows
-            }
-        }else{
-            response = {
-                code:STATUS_RESPONSE.ERROR,
-                status:'Error'
-            }
-        }
+router.get('/', exerciceController.list_all_exercices)
+router.get('/:id', exerciceController.get_exercice_by_id)
+router.get('/category/:category', exerciceController.get_exercices_by_category)
+router.post('/', exerciceController.create_exercice)
 
-        res.json(response)
-    })
-})
-
-router.post('/', (req, res) =>{
+/*(req, res) =>{
     const {title, description, disposition, objectifs, nbPlayers, time, category, popular, image_url, image_id} = req.body
     
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error'}
 
-    console.log(req.body)
-    console.log(title + '' + description)
+
     //title et description sont oligatoires
     if(title && description){
         mySqlConnection.query(INSERT_EXERCICE_QUERY, [title, description, disposition, objectifs,
@@ -46,10 +28,9 @@ router.post('/', (req, res) =>{
                 }else{
                     console.log(err)
                 }
+                res.json(response)
         })
     }
-
-    res.json(response)
-})
+})*/
 
 module.exports = router
