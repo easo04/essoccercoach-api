@@ -33,10 +33,10 @@ class User {
             sql.query("SELECT * FROM users WHERE id = ?", id, function(err, res){
                 if(err) {
                     console.log("error: ", err)
-                    return reject(err)
+                    reject(err)
                 }
                 else{
-                    return resolve(getUserFormated(res[0]))
+                    resolve(getUserFormated(res[0]))
                 }
             })
         })
@@ -47,9 +47,9 @@ class User {
             sql.query("SELECT * FROM users WHERE email = ?", email, (err, res)=>{
                 if(err) {
                     console.log("error: ", err)
-                    return reject(err)
+                    reject(err)
                 }else{
-                    return resolve(getUserFormated(res[0]))
+                    resolve(getUserFormated(res[0]))
                 }
             })
         })
@@ -60,13 +60,13 @@ class User {
             sql.query("SELECT * FROM users", (err, res)=>{
                 if(err) {
                     console.log("error: ", err)
-                    return reject(err)
+                    reject(err)
                 }else{
                     let users = []
                     res.forEach(u => {
                         users.push(getUserFormated(u))
                     });
-                    return resolve(users)
+                    resolve(users)
                 }
             })
         })

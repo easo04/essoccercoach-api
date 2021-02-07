@@ -25,6 +25,7 @@ exports.get_user_by_id = function(req, res) {
         res.status(STATUS_RESPONSE.ERROR).json(response)
     })
 }
+
 exports.subscribe = async function(req, res){
     let user = req.body;
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
@@ -62,6 +63,7 @@ exports.subscribe = async function(req, res){
        
     }
 }
+
 exports.login = async function(req, res){
     const {email, password} = req.body
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
@@ -80,6 +82,7 @@ exports.login = async function(req, res){
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 }
+
 exports.get_all_users = function(req, res, next){
     User.getAll().then(users => {
         let response = {

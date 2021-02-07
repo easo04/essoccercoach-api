@@ -16,71 +16,80 @@ let Exercice = function (exercice){
 }
 
 //statics functions
-Exercice.createExercice = function (newExercices, result) {    
-    sql.query('INSERT INTO exercices set ?', newExercices, function (err, res) {       
-        if(err) {
-            console.log("error: ", err)
-            result(err, null)
-        }
-        else{
-            result(null, res.insertId)
-        }
-    })      
+Exercice.createExercice = function (newExercices) {    
+    return new Promise((resolve, reject) =>{
+        sql.query('INSERT INTO exercices set ?', newExercices, function (err, res) {       
+            if(err) {
+                console.log("error: ", err)
+                reject(err)
+            }
+            else{
+                resolve(res.insertId)
+            }
+        })    
+    })  
 }
-Exercice.getExerciceById = function (exerciceId, result) {
-    sql.query("SELECT * FROM exercices WHERE id = ? ", exerciceId, function (err, res) {             
-        if(err) {
-            console.log("error: ", err)
-            result(err, null)
-        }
-        else{
-            result(null, res[0])
-        }
+Exercice.getExerciceById = function (exerciceId) {
+    return new Promise((resolve, reject) =>{
+        sql.query("SELECT * FROM exercices WHERE id = ? ", exerciceId, function (err, res) {             
+            if(err) {
+                reject(err)
+            }
+            else{
+                resolve(res[0])
+            }
+        })
     })
 }
-Exercice.getAllExercices = function(result) {
-    sql.query("SELECT * FROM exercices ORDER BY created_at DESC", function (err, res) {
-        if(err) {
-            console.log("error: ", err)
-            result(null, err)
-        }
-        else{
-            result(null, res)
-        }
-    });   
+Exercice.getAllExercices = function() {
+    return new Promise((resolve, reject) =>{
+        sql.query("SELECT * FROM exercices ORDER BY created_at DESC", function (err, res) {
+            if(err) {
+                reject(err)
+            }
+            else{
+                resolve(res)
+            }
+        });   
+    })
 }
-Exercice.getPopularExercices = function(result) {
-    sql.query("SELECT * FROM exercices WHERE popular = 1 ORDER BY created_at DESC", function (err, res) {
-        if(err) {
-            console.log("error: ", err)
-            result(null, err)
-        }
-        else{
-            result(null, res)
-        }
-    });   
+Exercice.getPopularExercices = function() {
+    return new Promise((resolve, reject) =>{
+        sql.query("SELECT * FROM exercices WHERE popular = 1 ORDER BY created_at DESC", function (err, res) {
+            if(err) {
+                console.log("error: ", err)
+                reject(err)
+            }
+            else{
+                resolve(res)
+            }
+        }) 
+    })  
 }
-Exercice.getExercicesByCategory = function(category, result){
-    sql.query("SELECT * FROM exercices WHERE category = ? ORDER BY created_at DESC", category, function (err, res) {             
-        if(err) {
-            console.log("error: ", err)
-            result(err, null)
-        }
-        else{
-            result(null, res)
-        }
+Exercice.getExercicesByCategory = function(category){
+    return new Promise((resolve, reject) =>{
+        sql.query("SELECT * FROM exercices WHERE category = ? ORDER BY created_at DESC", category, function (err, res) {             
+            if(err) {
+                console.log("error: ", err)
+                reject(err)
+            }
+            else{
+                resolve(res)
+            }
+        })
     })
 }
 Exercice.remove = function (id, result){
-    sql.query("DELETE FROM exercices WHERE id = ?", [id], function (err, res) {
-        if(err) {
-            console.log("error: ", err)
-            result(null, err)
-        }
-        else{
-        
-            result(null, res)
-        }
+    return new Promise((resolve, reject) =>{
+        sql.query("DELETE FROM exercices WHERE id = ?", [id], function (err, res) {
+            if(err) {
+                console.log("error: ", err)
+                reject(err)
+            }
+            else{
+                resolve(res)
+            }
+        })
     })
 }
 
