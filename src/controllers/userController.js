@@ -8,19 +8,20 @@ const STATUS_RESPONSE = {
 }
 
 exports.get_user_by_id = function(req, res) {
-    User.getUserById(req.params.id, function(err, user) {
-        let response = {
-            code:STATUS_RESPONSE.ERROR,
-            status:'Error'
-        }
-        if (err){
-            res.status(STATUS_RESPONSE.ERROR).json(response)
-        }
+    let response = {
+        code:STATUS_RESPONSE.ERROR,
+        status:'Error'
+    }
+    User.getUserById(req.params.id).then((user)=>{
+        console.log('succes')
         response = {
             code:STATUS_RESPONSE.OK,
             user:user
         }
         res.json(response)
+    }).catch(err => {
+        console.log(err)
+        res.status(STATUS_RESPONSE.ERROR).json(response)
     })
 }
 exports.subscribe = async function(req, res){
@@ -32,30 +33,28 @@ exports.subscribe = async function(req, res){
     }
     else{
 
-        //verify if user already exist
         try{
+            
+            //verify if user already exist
             const userOne = await User.getOne(user.email)
             if(userOne){
                 response.message = 'user already exist'
                 return res.status(STATUS_RESPONSE.ERROR).json(response)
-            }else{
-                // hash password
-                if (user.password) {
-                    user.password = await bcrypt.hash(user.password, 10)
-                }
-    
-                console.log('continue')
-                
-                //save the user
-                let newUser = new User(user)
-                User.subscribe(newUser, function(err, user_response) {
-                    if (err){
-                        return res.status(STATUS_RESPONSE.ERROR).json(response);
-                    }
-                    response = {code:STATUS_RESPONSE.OK, user_id:user_response}
-                    return res.status(STATUS_RESPONSE.OK).json(response)
-                })
             }
+
+            //hash password
+            if (user.password) {
+                user.password = await bcrypt.hash(user.password, 10)
+            }
+            
+            //save the user
+            let newUser = new User(user)
+            const userId = await User.subscribe(newUser)
+            if(userId){
+                response = {code:STATUS_RESPONSE.OK, message:'user subscribed'}
+                return res.status(STATUS_RESPONSE.OK).json(response)
+            }
+
         }catch(err){
             return res.status(STATUS_RESPONSE.ERROR).json(response)
         }
@@ -85,7 +84,11 @@ exports.login = async function(req, res){
     }
 }
 exports.get_all_users = function(req, res, next){
-    User.getAll()
-    .then(users => res.json(users))
-    .catch(next);
+    User.getAll().then(users => {
+        let response = {
+            code:STATUS_RESPONSE.OK,
+            users:users
+        }
+        res.json(response)
+    }).catch(next);
 }
