@@ -1,11 +1,11 @@
 
 const jwt = require('express-jwt');
-//const { secret } = require('config.json');
 let User = require('../models/userModel.js')
+const { secret_key } = require('../../config.json')
 
 module.exports = authorize;
 
-const secret = 'ESSOCCER_COACH_KEY'
+const secret = secret_key
 
 //token test eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjcsImlhdCI6MTYxMjY0NDkxMywiZXhwIjoxNjEzMjQ5NzEzfQ.9ZLLD9gH6bU9Rs_920sn3VV0szUf3pJEMfJZ_TUXimY
 

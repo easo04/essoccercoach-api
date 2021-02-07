@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 let User = require('../models/userModel.js')
+const { secret_key } = require('../../config.json')
 
 const STATUS_RESPONSE = {
     OK:200,
@@ -66,20 +67,16 @@ exports.login = async function(req, res){
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
     try{
         const userOne = await User.getOne(email)
-
-        console.log('userOne' + userOne)
-
         if (!userOne || !(await bcrypt.compare(password, userOne.password))){
             response.message = 'email or password is incorrect'
             return res.status(STATUS_RESPONSE.ERROR).json(response)
         }
 
         // authentication successful
-        const token = jwt.sign({ sub: userOne.id }, 'ESSOCCER_COACH_KEY', { expiresIn: '7d' })
+        const token = jwt.sign({ sub: userOne.id }, secret_key, { expiresIn: '7d' })
         response = {code:STATUS_RESPONSE.OK, user:userOne, token: token}
         return res.status(STATUS_RESPONSE.OK).json(response)
     }catch(err){
-        console.log('error' + err)
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 }
