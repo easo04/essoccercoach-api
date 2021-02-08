@@ -28,6 +28,19 @@ npm run dev
         "popular":0, //0 par défaut
     }
 
+**Users**
+-Créer user (POST): [api/users](http://localhost:4000/api/users)
+    
+    Exemple:
+        {
+    "email":"edgar2@promutuel.ca",
+    "password":"test123",
+    "user_name":"edgar2",
+    "subscription":"free",
+    "first_name":"edgars",
+    "last_name":"silveras"
+}
+    }
 
 
 

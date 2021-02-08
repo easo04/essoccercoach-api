@@ -6,7 +6,7 @@ class User {
     constructor(user){
         this.first_name = user.first_name
         this.last_name = user.last_name
-        this.email = user.email,
+        this.email = user.email
         this.password = user.password
         this.user_name = user.user_name
         this.subscription = user.subscription
@@ -36,20 +36,22 @@ class User {
                     reject(err)
                 }
                 else{
-                    resolve(getUserFormated(res[0]))
+                    let response = res[0] ? getUserFormated(res[0]) : undefined;
+                    resolve(response)
                 }
             })
         })
     }
 
-    static getOne(email){
+    static getOne(email, pass){
         return new Promise((resolve, reject) =>{
             sql.query("SELECT * FROM users WHERE email = ?", email, (err, res)=>{
                 if(err) {
                     console.log("error: ", err)
                     reject(err)
                 }else{
-                    resolve(getUserFormated(res[0]))
+                    let response = res[0] ? getUserFormated(res[0], pass) : undefined;
+                    resolve(response)
                 }
             })
         })
@@ -74,9 +76,8 @@ class User {
 }
 
 //formate the user string
-function getUserFormated(res){
-    console.log('formated')
-    return {
+function getUserFormated(res, pass){
+    let response = {
         id:res.id,
         fist_name:res.first_name,
         last_name:res.last_name,
@@ -86,6 +87,12 @@ function getUserFormated(res){
         image_url:res.image_url,
         subscription:res.subscription
     }
+
+    if(pass){
+        response.password = res.password
+    }
+
+    return response
 }
 
 module.exports = User;

@@ -67,15 +67,28 @@ exports.login = async function(req, res){
     const {email, password} = req.body
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
     try{
-        const userOne = await User.getOne(email)
+        const userOne = await User.getOne(email, true)
+        console.log(userOne)
         if (!userOne || !(await bcrypt.compare(password, userOne.password))){
             response.message = 'email or password is incorrect'
             return res.status(STATUS_RESPONSE.ERROR).json(response)
         }
 
+        //formate user response
+        const userResponse = {
+            id:userOne.id,
+            fist_name:userOne.first_name,
+            last_name:userOne.last_name,
+            user_name:userOne.user_name,
+            email:userOne.email,
+            created_at:userOne.created_at,
+            image_url:userOne.image_url,
+            subscription:userOne.subscription
+        }
+
         // authentication successful
         const token = jwt.sign({ sub: userOne.id }, process.env.SECRET_KEY, { expiresIn: '7d' })
-        response = {code:STATUS_RESPONSE.OK, user:userOne, token: token}
+        response = {code:STATUS_RESPONSE.OK, user:userResponse, token: token}
         return res.status(STATUS_RESPONSE.OK).json(response)
     }catch(err){
         return res.status(STATUS_RESPONSE.ERROR).json(response)

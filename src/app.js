@@ -18,7 +18,6 @@ app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(errorHandler);
 
-
 //routes api
 app.use('/api/emails', require('./routes/emails.js'))
 app.use('/api/exercices', require('./routes/exercices.js'))
