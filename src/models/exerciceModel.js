@@ -79,7 +79,7 @@ Exercice.getExercicesByCategory = function(category){
         })
     })
 }
-Exercice.remove = function (id, result){
+Exercice.remove = function (id){
     return new Promise((resolve, reject) =>{
         sql.query("DELETE FROM exercices WHERE id = ?", [id], function (err, res) {
             if(err) {
