@@ -1,10 +1,2 @@
 {
-    "db_config":{
-        "user":"root",
-        "host":"localhost",
-        "password":"Silvera1993!",
-        "port":"3306",
-        "database":"essoccercoach"
-    },
-    "secret_key":"ESSOCCER_COACH_KEY"
 }

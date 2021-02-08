@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 let User = require('../models/userModel.js')
-const { secret_key } = require('../../config.json')
 
 const STATUS_RESPONSE = {
     OK:200,
@@ -75,7 +74,7 @@ exports.login = async function(req, res){
         }
 
         // authentication successful
-        const token = jwt.sign({ sub: userOne.id }, secret_key, { expiresIn: '7d' })
+        const token = jwt.sign({ sub: userOne.id }, process.env.SECRET_KEY, { expiresIn: '7d' })
         response = {code:STATUS_RESPONSE.OK, user:userOne, token: token}
         return res.status(STATUS_RESPONSE.OK).json(response)
     }catch(err){

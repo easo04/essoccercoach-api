@@ -1,12 +1,11 @@
 const mysql = require('mysql')
-const config = require('../config.json')
 
 const mySqlConnection = mysql.createConnection({
-    host:config.db_config.host,
-    user:config.db_config.user,
-    password:config.db_config.password,
-    port:config.db_config.port,
-    database:config.db_config.database
+    host:process.env.HOST_DB,
+    user:process.env.USER_DB,
+    password:process.env.PASSWORD_DB,
+    port:process.env.PORT_DB,
+    database:process.env.DATABASE_DB
 })
 
 mySqlConnection.connect((err) =>{
