@@ -16,18 +16,18 @@ npm run dev
 - Créer un nouvel exercice(POST): [api/exercices](http://localhost:4000/api/exercices)
 
     Exemple:
-    {
-        "title":"title",
-        "description":"description", 
-        "disposition":"disposition", //Peut être null
-        "objectifs":"disposition", //Peut être null
-        "category":"rondo", //Peut être null
-        "nbPlayers":11, //Peut être null
-        "time":"20min", //Peut être null
-        "image_url":"http://image.com", //Peut être null
-        "image_id":"imageId", //Peut être null
-        "popular":0, //0 par défaut
-    }
+        {
+            "title":"title",
+            "description":"description", 
+            "disposition":"disposition", //Peut être null
+            "objectifs":"disposition", //Peut être null
+            "category":"rondo", //Peut être null
+            "nbPlayers":11, //Peut être null
+            "time":"20min", //Peut être null
+            "image_url":"http://image.com", //Peut être null
+            "image_id":"imageId", //Peut être null
+            "popular":0, //0 par défaut
+        }
 
 **Users**
 -Créer user (POST): [api/users](http://localhost:4000/api/users/signup)
