@@ -12,6 +12,7 @@ class User {
         this.subscription = user.subscription
         this.image_url = user.image_url
         this.image_id = user.image_id
+        this.token = user.token
     }
 
     static subscribe(user){
@@ -73,6 +74,45 @@ class User {
             })
         })
     }
+
+    static updateToken(token, id){
+        return new Promise((resolve, reject) =>{
+            sql.query("UPDATE users SET token = ? WHERE id = ?", [token, id], (err, res)=>{
+                if(err) {
+                    console.log("error: ", err)
+                    reject(err)
+                }else{
+                    resolve(res)
+                }
+            })
+        })
+    }
+
+    static findByToken(token){
+        return new Promise((resolve, reject) =>{
+            sql.query("SELECT id FROM users WHERE token = ?", token, (err, res)=>{
+                if(err) {
+                    console.log("error: ", err)
+                    reject(err)
+                }else{ 
+                    resolve(res[0])
+                }
+            })
+        })
+    }
+
+    static deleteToken(id){
+        return new Promise((resolve, reject) =>{
+            sql.query("UPDATE users SET token = '0' WHERE id = ?", id, (err, res)=>{
+                if(err) {
+                    console.log("error: ", err)
+                    reject(err)
+                }else{ 
+                    resolve(res)
+                }
+            })
+        })
+    }
 }
 
 //formate the user string
@@ -90,6 +130,7 @@ function getUserFormated(res, pass){
 
     if(pass){
         response.password = res.password
+        response.token = res.token
     }
 
     return response

@@ -39,6 +39,8 @@ CREATE TABLE users (
     image_id VARCHAR(300)
 );
 
+ALTER TABLE users ADD token VARCHAR(500) AFTER image_id;
+
 DESCRIBE users;
 
 SHOW TABLES;
