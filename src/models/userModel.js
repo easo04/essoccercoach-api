@@ -88,9 +88,9 @@ class User {
         })
     }
 
-    static findByToken(token){
+    static getUserByToken(token){
         return new Promise((resolve, reject) =>{
-            sql.query("SELECT id FROM users WHERE token = ?", token, (err, res)=>{
+            sql.query("SELECT * FROM users WHERE token = ?", token, (err, res)=>{
                 if(err) {
                     console.log("error: ", err)
                     reject(err)
@@ -99,6 +99,19 @@ class User {
                 }
             })
         })
+    }
+
+    static userIsLogged(id){
+        return new Promise((resolve, reject) =>{
+            sql.query("SELECT token FROM users WHERE id = ?", id, (err, res)=>{
+                if(err) {
+                    reject(err)
+                }else{ 
+                    let response = res[0] && res[0] !== '0'
+                    resolve(response)
+                }
+            })
+        }) 
     }
 
     static deleteToken(id){

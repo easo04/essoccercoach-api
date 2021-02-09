@@ -71,7 +71,6 @@ exports.login = async function(req, res){
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
     try{
         const userOne = await User.getOne(email, true)
-        console.log(userOne)
         if (!userOne || !(await bcrypt.compare(password, userOne.password))){
             response.message = 'email or password is incorrect'
             return res.status(STATUS_RESPONSE.ERROR).json(response)
@@ -79,6 +78,7 @@ exports.login = async function(req, res){
 
         //verify if user is already logged
         if(userOne.token && userOne.token !== TOKEN_INVALID){
+            response.status = 'ALREADY_LOGGED'
             response.message = 'user already logged'
             return res.status(STATUS_RESPONSE.ALREADY_LOGGED).json(response)
         }
@@ -96,7 +96,7 @@ exports.login = async function(req, res){
         }
 
         // authentication successful
-        const token = jwt.sign({ sub: userOne.id }, process.env.SECRET_KEY, { expiresIn: '7d' })
+        const token = jwt.sign({ sub: userOne.id }, process.env.SECRET_KEY, { expiresIn: '1d' })
         await User.updateToken(token, userOne.id)
         response = {code:STATUS_RESPONSE.OK, user:userResponse, token: token}
         return res.status(STATUS_RESPONSE.OK).json(response)
@@ -121,7 +121,7 @@ exports.logout = async function(req, res){
         status:'error'
     }
     try{
-        await User.deleteToken(req.params.id)
+        await User.deleteToken(req.user.id)
         response.code = STATUS_RESPONSE.OK
         response.status = 'logout'
         res.status(STATUS_RESPONSE.OK).json(response)
