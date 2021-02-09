@@ -4,7 +4,8 @@ use essoccercoach;
 
 CREATE TABLE emails (
     id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(40) NOT NULL
+    email VARCHAR(40) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE emails ADD created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER email;
@@ -36,7 +37,8 @@ CREATE TABLE users (
     subscription ENUM('admin', 'premium', 'middle', 'free'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     image_url VARCHAR(300),
-    image_id VARCHAR(300)
+    image_id VARCHAR(300),
+    token VARCHAR(500)
 );
 
 ALTER TABLE users ADD token VARCHAR(500) AFTER image_id;

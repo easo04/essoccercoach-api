@@ -1,2 +1,8 @@
 {
+    /*USER_DB = root
+    HOST_DB = localhost
+    PASSWORD_DB = Silvera1993!
+    PORT_DB = 3306
+    DATABASE_DB = essoccercoach
+    SECRET_KEY = ESSOCCER_COACH_KEY*/
 }

@@ -14,6 +14,7 @@ npm run dev
 - Obtenir les exercices par catégorie(GET): [api/exercices/category/:category](http://localhost:4000/api/exercices/category/:category)
 - Obtenir les exercices par id(GET): [api/exercices/:id](http://localhost:4000/api/exercices/:id)
 - Créer un nouvel exercice(POST): [api/exercices](http://localhost:4000/api/exercices)
+
     Exemple:
     {
         "title":"title",
@@ -29,18 +30,17 @@ npm run dev
     }
 
 **Users**
--Créer user (POST): [api/users](http://localhost:4000/api/users)
+-Créer user (POST): [api/users](http://localhost:4000/api/users/signup)
     
     Exemple:
         {
-    "email":"edgar2@promutuel.ca",
-    "password":"test123",
-    "user_name":"edgar2",
-    "subscription":"free",
-    "first_name":"edgars",
-    "last_name":"silveras"
-}
-    }
+            "email":"edgar2@promutuel.ca",
+            "password":"test123",
+            "user_name":"edgar2",
+            "subscription":"free",
+            "first_name":"edgars",
+            "last_name":"silveras"
+        }
 
 
 
