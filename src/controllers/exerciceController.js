@@ -1,4 +1,8 @@
+const redis = require('redis')
 let Exercice = require('../models/exerciceModel.js')
+
+// create and connect redis client to local instance.
+const client = redis.createClient();
 
 const STATUS_RESPONSE = {
     OK:200,
@@ -29,16 +33,30 @@ exports.get_exercices_by_category = function(req, res){
     }
 
     const category = req.params.category
-
     if(categories_valids.includes(category)){
-        Exercice.getExercicesByCategory(category).then(exercices => {
-            response = {
-                code:STATUS_RESPONSE.OK,
-                category:category,
-                exercices:exercices
+        
+        // Try fetching the result from Redis first in case we have it cached
+        return client.get(`get-category:${category}`, (err, result) => {
+
+            // If that key exist in Redis store
+            if (result) {
+                const resultJSON = JSON.parse(result);
+                return res.status(200).json(resultJSON);
+            } else { 
+                Exercice.getExercicesByCategory(category).then(exercices => {
+                    response = {
+                        code:STATUS_RESPONSE.OK,
+                        category:category,
+                        exercices:exercices
+                    }
+
+                    //set client redis cache to 60min
+                    client.setex(`get-category:${category}`, 3600, JSON.stringify({ source: 'Redis Cache', ...response, }));
+                    
+                    res.json(response)
+                }).catch(err => res.status(STATUS_RESPONSE.ERROR).json(response))    
             }
-            res.json(response)
-        }).catch(err => res.status(STATUS_RESPONSE.ERROR).json(response))
+        })
     }else{
         response.message = 'Catgory not valid'
         response.status = 'CATEGORY_NOT_VALID'
@@ -47,22 +65,72 @@ exports.get_exercices_by_category = function(req, res){
 }
 
 exports.get_popular_exercices = function(req, res){
-    let response = {
-        code:STATUS_RESPONSE.ERROR,
-        status:'Error'
-    }
+    
+    // Try fetching the result from Redis first in case we have it cached
+    return client.get(`get-popular-exercices`, (err, result) => {
 
-    Exercice.getPopularExercices().then(exercices => {
-        response = {
-            code:STATUS_RESPONSE.OK,
-            exercices:exercices
+          // If that key exist in Redis store
+          if (result) {
+
+            const resultJSON = JSON.parse(result);
+            return res.status(200).json(resultJSON);
+        } else { 
+
+            let response = {
+                code:STATUS_RESPONSE.ERROR,
+                status:'Error'
+            }
+
+            Exercice.getPopularExercices().then(exercices => {
+                response = {
+                    code:STATUS_RESPONSE.OK,
+                    exercices:exercices
+                }
+
+                //set client redis cache to 60min
+                client.setex(`get-popular-exercices`, 3600, JSON.stringify({ source: 'Redis Cache', ...response, }));
+                
+                return res.status(STATUS_RESPONSE.OK).json(response)
+            }).catch(err => res.status(STATUS_RESPONSE.ERROR).json(response))
         }
-        res.json(response)
-    }).catch(err => res.status(STATUS_RESPONSE.ERROR).json(response))
+    })
 }
   
 exports.list_all_exercices = function(req, res) {
-    Exercice.getAllExercices().then(exercices =>{
+    
+    // Try fetching the result from Redis first in case we have it cached
+    return client.get(`get-all-exercices`, (err, result) => {
+
+        // If that key exist in Redis store
+        if (result) {
+
+            const resultJSON = JSON.parse(result);
+            return res.status(200).json(resultJSON);
+        } else { 
+
+            // Key does not exist in Redis store
+            // Fetch directly from db
+            Exercice.getAllExercices().then(exercices =>{
+                let response = {
+                    code:STATUS_RESPONSE.OK,
+                    exercices:exercices
+                }
+
+                //set client redis cache to 60min
+                client.setex(`get-all-exercices`, 3600, JSON.stringify({ source: 'Redis Cache', ...response, }));
+                
+                return res.status(STATUS_RESPONSE.OK).json(response)
+            }).catch(err =>{
+                let response = {
+                    code:STATUS_RESPONSE.ERROR,
+                    status:'Error'
+                }
+                return res.status(STATUS_RESPONSE.ERROR).json(response)
+            })
+        }
+    })
+
+    /*Exercice.getAllExercices().then(exercices =>{
         let response = {
             code:STATUS_RESPONSE.OK,
             exercices:exercices
@@ -74,7 +142,7 @@ exports.list_all_exercices = function(req, res) {
             status:'Error'
         }
         res.status(STATUS_RESPONSE.ERROR).json(response)
-    })
+    })*/
 }
 
 exports.create_exercice = function(req, res) {
