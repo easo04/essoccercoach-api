@@ -19,14 +19,14 @@ npm run dev
         {
             "title":"title",
             "description":"description", 
-            "disposition":"disposition", //Peut être null
-            "objectifs":"disposition", //Peut être null
-            "category":"rondo", //Peut être null
-            "nbPlayers":11, //Peut être null
-            "time":"20min", //Peut être null
-            "image_url":"http://image.com", //Peut être null
-            "image_id":"imageId", //Peut être null
-            "popular":0, //0 par défaut
+            "disposition":"disposition", 
+            "objectifs":"disposition",
+            "category":"rondo", 
+            "nbPlayers":11,
+            "time":"20min",
+            "image_url":"http://image.com", 
+            "image_id":"imageId", 
+            "popular":0, 
         }
 
 **Users**
