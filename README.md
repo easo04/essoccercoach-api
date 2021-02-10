@@ -30,7 +30,7 @@ npm run dev
         }
 
 **Users**
--Créer user (POST): [api/users](http://localhost:4000/api/users/signup)
+-Créer user (POST): [api/users/signup](http://localhost:4000/api/users/signup)
     
     Exemple:
         {
@@ -41,6 +41,15 @@ npm run dev
             "first_name":"edgars",
             "last_name":"silveras"
         }
+-Se connecter (POST): [api/users/login](http://localhost:4000/api/users/login)
+
+    Exemple:
+        {
+            "email":"edgar2@promutuel.ca",
+            "password":"test123",
+        }
+
+-Se déconnecter (DELETE) [api/users/logout](http://localhost:4000/api/users/logout)
 
 
 

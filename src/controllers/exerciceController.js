@@ -50,9 +50,11 @@ exports.get_exercices_by_category = function(req, res){
                         exercices:exercices
                     }
 
-                    //set client redis cache to 60min
-                    client.setex(`get-category:${category}`, 3600, JSON.stringify({ source: 'Redis Cache', ...response, }));
-                    
+                    if(exercices.length > 0){
+                        
+                        //set client redis cache to 60min
+                        client.setex(`get-category:${category}`, 3600, JSON.stringify({ source: 'Redis Cache', ...response, }));
+                    }
                     res.json(response)
                 }).catch(err => res.status(STATUS_RESPONSE.ERROR).json(response))    
             }
@@ -87,9 +89,11 @@ exports.get_popular_exercices = function(req, res){
                     exercices:exercices
                 }
 
-                //set client redis cache to 60min
-                client.setex(`get-popular-exercices`, 3600, JSON.stringify({ source: 'Redis Cache', ...response, }));
-                
+                if(exercices.length > 0){
+
+                    //set client redis cache to 60min
+                    client.setex(`get-popular-exercices`, 3600, JSON.stringify({ source: 'Redis Cache', ...response, }));
+                }
                 return res.status(STATUS_RESPONSE.OK).json(response)
             }).catch(err => res.status(STATUS_RESPONSE.ERROR).json(response))
         }
@@ -116,8 +120,11 @@ exports.list_all_exercices = function(req, res) {
                     exercices:exercices
                 }
 
-                //set client redis cache to 60min
-                client.setex(`get-all-exercices`, 3600, JSON.stringify({ source: 'Redis Cache', ...response, }));
+                if(exercices.length > 0){
+
+                     //set client redis cache to 60min
+                    client.setex(`get-all-exercices`, 3600, JSON.stringify({ source: 'Redis Cache', ...response, }));
+                }
                 
                 return res.status(STATUS_RESPONSE.OK).json(response)
             }).catch(err =>{
