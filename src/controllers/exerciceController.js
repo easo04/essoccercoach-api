@@ -1,8 +1,14 @@
 const redis = require('redis')
 let Exercice = require('../models/exerciceModel.js')
 
-// create and connect redis client to local instance.
-const client = redis.createClient();
+let client
+if(process.env.NODE_ENV === 'production'){
+    client = redis.createClient(process.env.REDIS_URL);
+}else{
+
+    // create and connect redis client to local instance.
+    client = redis.createClient();
+}
 
 const STATUS_RESPONSE = {
     OK:200,
