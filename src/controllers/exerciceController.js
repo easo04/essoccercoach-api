@@ -33,6 +33,7 @@ exports.get_exercice_by_id = function(req, res) {
 }
 
 exports.get_exercices_by_category = function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
     let response = {
         code:STATUS_RESPONSE.ERROR,
         status:'Error'
@@ -73,12 +74,13 @@ exports.get_exercices_by_category = function(req, res){
 }
 
 exports.get_popular_exercices = function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
     
     // Try fetching the result from Redis first in case we have it cached
     return client.get(`get-popular-exercices`, (err, result) => {
 
           // If that key exist in Redis store
-          if (result) {
+        if (result) {
 
             const resultJSON = JSON.parse(result);
             return res.status(200).json(resultJSON);
@@ -105,8 +107,10 @@ exports.get_popular_exercices = function(req, res){
         }
     })
 }
-  
+
 exports.list_all_exercices = function(req, res) {
+    
+    res.header("Access-Control-Allow-Origin", "*");
     
     // Try fetching the result from Redis first in case we have it cached
     return client.get(`get-all-exercices`, (err, result) => {
