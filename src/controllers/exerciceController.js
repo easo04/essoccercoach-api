@@ -17,6 +17,8 @@ const STATUS_RESPONSE = {
 const categories_valids = ['rondo', 'offensif', 'deffensif', 'tactique', 'gardien', 'physique']
 
 exports.get_exercice_by_id = function(req, res) {
+    res.header("Access-Control-Allow-Origin", "*")
+    
     let response = {
         code:STATUS_RESPONSE.ERROR,
         status:'Error'
@@ -33,7 +35,7 @@ exports.get_exercice_by_id = function(req, res) {
 }
 
 exports.get_exercices_by_category = function(req, res){
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", "*")
     let response = {
         code:STATUS_RESPONSE.ERROR,
         status:'Error'
@@ -74,7 +76,7 @@ exports.get_exercices_by_category = function(req, res){
 }
 
 exports.get_popular_exercices = function(req, res){
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", "*")
     
     // Try fetching the result from Redis first in case we have it cached
     return client.get(`get-popular-exercices`, (err, result) => {
@@ -110,8 +112,8 @@ exports.get_popular_exercices = function(req, res){
 
 exports.list_all_exercices = function(req, res) {
     
-    res.header("Access-Control-Allow-Origin", "*");
-    
+    res.header("Access-Control-Allow-Origin", "*")
+
     // Try fetching the result from Redis first in case we have it cached
     return client.get(`get-all-exercices`, (err, result) => {
 
