@@ -1,6 +1,6 @@
 const mysql = require('mysql')
 
-const mySqlConnection = mysql.createConnection({
+const mySqlConnection = mysql.createPool({
     host:process.env.HOST_DB,
     user:process.env.USER_DB,
     password:process.env.PASSWORD_DB,
