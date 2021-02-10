@@ -13,6 +13,7 @@ class User {
         this.image_url = user.image_url
         this.image_id = user.image_id
         this.token = user.token
+        this.activated = 1
     }
 
     static subscribe(user){

@@ -41,7 +41,9 @@ CREATE TABLE users (
     token VARCHAR(500)
 );
 
-ALTER TABLE users ADD token VARCHAR(500) AFTER image_id;
+ALTER TABLE users ADD activated BOOLEAN DEFAULT FALSE AFTER token;
+ALTER TABLE users ADD langue ENUM('fr', 'es', 'en') DEFAULT 'fr' AFTER activated;
+
 
 DESCRIBE users;
 
