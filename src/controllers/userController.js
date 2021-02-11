@@ -11,6 +11,7 @@ const STATUS_RESPONSE = {
 const TOKEN_INVALID = "0"
 
 exports.get_user_by_id = function(req, res) {
+    res.header("Access-Control-Allow-Origin", "*")
     let response = {
         code:STATUS_RESPONSE.ERROR,
         status:'Error'
@@ -29,9 +30,10 @@ exports.get_user_by_id = function(req, res) {
 }
 
 exports.subscribe = async function(req, res){
+    res.header("Access-Control-Allow-Origin", "*")
     let user = req.body;
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
-     if(!user.first_name || !user.last_name || !user.email || !user.password){
+    if(!user.first_name || !user.last_name || !user.email || !user.password){
         response.message = 'Please provide firts_name/last_name/email/password'
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
@@ -62,11 +64,12 @@ exports.subscribe = async function(req, res){
         }catch(err){
             return res.status(STATUS_RESPONSE.ERROR).json(response)
         }
-       
     }
 }
 
 exports.login = async function(req, res){
+    res.header("Access-Control-Allow-Origin", "*")
+
     const {email, password} = req.body
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
     try{
