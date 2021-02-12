@@ -148,20 +148,6 @@ exports.list_all_exercices = function(req, res) {
             })
         }
     })
-
-    /*Exercice.getAllExercices().then(exercices =>{
-        let response = {
-            code:STATUS_RESPONSE.OK,
-            exercices:exercices
-        }
-        res.status(STATUS_RESPONSE.OK).json(response)
-    }).catch(err =>{
-        let response = {
-            code:STATUS_RESPONSE.ERROR,
-            status:'Error'
-        }
-        res.status(STATUS_RESPONSE.ERROR).json(response)
-    })*/
 }
 
 exports.create_exercice = function(req, res) {
@@ -169,7 +155,7 @@ exports.create_exercice = function(req, res) {
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
 
     //verify body valid
-     if(!exercice.title || !exercice.description){
+    if(!exercice.title || !exercice.description){
         response.message = 'Please provide title/description'
         res.status(STATUS_RESPONSE.ERROR).json(response)
     }else{
