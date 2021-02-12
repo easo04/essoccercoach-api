@@ -89,7 +89,7 @@ exports.login = async function(req, res){
         //formate user response
         const userResponse = {
             id:userOne.id,
-            fist_name:userOne.first_name,
+            first_name:userOne.first_name,
             last_name:userOne.last_name,
             user_name:userOne.user_name,
             email:userOne.email,

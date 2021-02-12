@@ -133,7 +133,7 @@ class User {
 function getUserFormated(res, pass){
     let response = {
         id:res.id,
-        fist_name:res.first_name,
+        first_name:res.first_name,
         last_name:res.last_name,
         user_name:res.user_name,
         email:res.email,
