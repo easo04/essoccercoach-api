@@ -159,10 +159,13 @@ exports.create_exercice = function(req, res) {
         response.message = 'Please provide title/description'
         res.status(STATUS_RESPONSE.ERROR).json(response)
     }else{
-        Exercice.createExercice(exercice).then(res =>{
-            response = {code:STATUS_RESPONSE.OK, exercice_id:exerice}
+        Exercice.createExercice(exercice).then(exerciceId =>{
+            response = {code:STATUS_RESPONSE.OK, exercice_id:exerciceId}
             res.status(STATUS_RESPONSE.OK).json(response)
-        }).catch(err => res.status(STATUS_RESPONSE.ERROR).json(response))
+        }).catch(err => {
+            console.log(err)
+            res.status(STATUS_RESPONSE.ERROR).json(response)
+        })
     }
 }
 

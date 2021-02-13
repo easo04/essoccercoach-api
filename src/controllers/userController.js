@@ -75,6 +75,7 @@ exports.login = async function(req, res){
     try{
         const userOne = await User.getOne(email, true)
         if (!userOne || !(await bcrypt.compare(password, userOne.password))){
+            response.status = 'EMAIL_PASSWORD_INCORRECT'
             response.message = 'email or password is incorrect'
             return res.status(STATUS_RESPONSE.ERROR).json(response)
         }
