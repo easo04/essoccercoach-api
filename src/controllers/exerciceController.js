@@ -110,6 +110,31 @@ exports.get_popular_exercices = function(req, res){
     })
 }
 
+exports.get_same_category = function(req, res){
+    res.header("Access-Control-Allow-Origin", "*")
+
+    let response = {
+        code:STATUS_RESPONSE.ERROR,
+        status:'Error'
+    }
+
+    const {category, id} = req.body
+    if(categories_valids.includes(category)){
+
+        Exercice.getSameCategory(category, id).then(exercices => {
+            response = {
+                code:STATUS_RESPONSE.OK,
+                exercices:exercices
+            }
+            return res.status(STATUS_RESPONSE.OK).json(response)
+        }).catch(err => res.status(STATUS_RESPONSE.ERROR).json(response))
+    }else{
+        response.message = 'Catgory not valid'
+        response.status = 'CATEGORY_NOT_VALID'
+        res.status(STATUS_RESPONSE.ERROR).json(response)
+    }
+}
+
 exports.list_all_exercices = function(req, res) {
     res.header("Access-Control-Allow-Origin", "*")
 

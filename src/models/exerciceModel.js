@@ -105,5 +105,18 @@ Exercice.updatePopular = function(id, value){
         })
     })
 }
+Exercice.getSameCategory = function(category, id){
+    return new Promise((resolve, reject) =>{
+        sql.query("SELECT * FROM exercices WHERE category = ? AND id <> ? ORDER BY RAND () LIMIT 4", [category, id], function (err, res) {
+            if(err) {
+                console.log("error: ", err)
+                reject(err)
+            }
+            else{
+                resolve(res)
+            }
+        })
+    })
+}
 
 module.exports = Exercice;
