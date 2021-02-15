@@ -92,5 +92,18 @@ Exercice.remove = function (id){
         })
     })
 }
+Exercice.updatePopular = function(id, value){
+    return new Promise((resolve, reject) =>{
+        sql.query("UPDATE exercices SET popular = ? WHERE id = ?", [value, id], function (err, res) {
+            if(err) {
+                console.log("error: ", err)
+                reject(err)
+            }
+            else{
+                resolve(res)
+            }
+        })
+    })
+}
 
 module.exports = Exercice;

@@ -111,42 +111,23 @@ exports.get_popular_exercices = function(req, res){
 }
 
 exports.list_all_exercices = function(req, res) {
-    
     res.header("Access-Control-Allow-Origin", "*")
 
-    // Try fetching the result from Redis first in case we have it cached
-    return client.get(`get-all-exercices`, (err, result) => {
-
-        // If that key exist in Redis store
-        if (result) {
-
-            const resultJSON = JSON.parse(result);
-            return res.status(200).json(resultJSON);
-        } else { 
-
-            // Key does not exist in Redis store
-            // Fetch directly from db
-            Exercice.getAllExercices().then(exercices =>{
-                let response = {
-                    code:STATUS_RESPONSE.OK,
-                    exercices:exercices
-                }
-
-                if(exercices.length > 0){
-
-                     //set client redis cache to 60min
-                    client.setex(`get-all-exercices`, 3600, JSON.stringify({ source: 'Redis Cache', ...response, }));
-                }
-                
-                return res.status(STATUS_RESPONSE.OK).json(response)
-            }).catch(err =>{
-                let response = {
-                    code:STATUS_RESPONSE.ERROR,
-                    status:'Error'
-                }
-                return res.status(STATUS_RESPONSE.ERROR).json(response)
-            })
+    // Key does not exist in Redis store
+    // Fetch directly from db
+    Exercice.getAllExercices().then(exercices =>{
+        let response = {
+            code:STATUS_RESPONSE.OK,
+            exercices:exercices
         }
+        
+        return res.status(STATUS_RESPONSE.OK).json(response)
+    }).catch(err =>{
+        let response = {
+            code:STATUS_RESPONSE.ERROR,
+            status:'Error'
+        }
+        return res.status(STATUS_RESPONSE.ERROR).json(response)
     })
 }
 
@@ -174,11 +155,29 @@ exports.delete_exercice = function(req, res) {
         code:STATUS_RESPONSE.ERROR,
         status:'Error'
     }
-    Exercice.remove(req.params.id).then(res => {
+    Exercice.remove(req.params.id).then(resDelete => {
         response = {
             code:STATUS_RESPONSE.OK,
             message:'exercice deleted'
         }
-        res.json(response)
+        return res.status(STATUS_RESPONSE.OK).json(response)
     }).catch(err=>res.status(STATUS_RESPONSE.ERROR).json(response))
+}
+
+exports.update_exercice_popular = function(req, res) {
+    let response = {
+        code:STATUS_RESPONSE.ERROR,
+        status:'Error'
+    }
+    let {id, popular} = req.body
+    popular = popular === true ? 1 : 0
+    Exercice.updatePopular(id, popular).then(resExe => {
+        response = {
+            code:STATUS_RESPONSE.OK,
+            message:'exercice updated'
+        }
+        return res.status(STATUS_RESPONSE.OK).json(response)
+    }).catch(err => {
+        return res.status(STATUS_RESPONSE.ERROR).json(response)
+    })
 }

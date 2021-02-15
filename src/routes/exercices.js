@@ -10,6 +10,7 @@ router.get('/:id', exerciceController.get_exercice_by_id)
 router.get('/category/:category', exerciceController.get_exercices_by_category)
 router.get('/populars/get-all', exerciceController.get_popular_exercices)
 router.post('/', authorize(true), exerciceController.create_exercice)
+router.post('/pupulars/update-exercice', authorize(true), exerciceController.update_exercice_popular)
 router.delete('/:id', authorize(true), exerciceController.delete_exercice)
 
 module.exports = router

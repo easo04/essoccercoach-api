@@ -82,9 +82,10 @@ exports.login = async function(req, res){
 
         //verify if user is already logged
         if(userOne.token && userOne.token !== TOKEN_INVALID){
-            response.status = 'ALREADY_LOGGED'
-            response.message = 'user already logged'
-            return res.status(STATUS_RESPONSE.ALREADY_LOGGED).json(response)
+            //response.status = 'ALREADY_LOGGED'
+            //response.message = 'user already logged'
+            User.deleteToken(userOne.id)
+            //return res.status(STATUS_RESPONSE.ALREADY_LOGGED).json(response)
         }
 
         //formate user response
