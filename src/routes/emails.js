@@ -8,4 +8,6 @@ router.get('/', authorize(true), emailController.get_all)
 
 router.post('/', emailController.add_email)
 
+router.delete('/:id', authorize(true), emailController.delete_email)
+
 module.exports = router

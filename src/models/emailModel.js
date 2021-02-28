@@ -50,7 +50,7 @@ class Email {
     }
 
     static delete(id){
-        new Promise((resolve, reject) =>{
+        return new Promise((resolve, reject) =>{
             sql.query("DELETE FROM emails WHERE id = ?", id, (err, res)=>{
                 if(err) {
                     console.log("error: ", err)
