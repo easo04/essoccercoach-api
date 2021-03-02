@@ -230,7 +230,10 @@ exports.updatePassword = async function(req, res){
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
+    console.log('step1 mdp ' + newPassword)
+
     const userOne = await User.getOne(email, true)
+    console.log('step2 user ' + userOne)
     if (!userOne || !(await bcrypt.compare(oldPassword, userOne.password))){
         response.status = 'EMAIL_PASSWORD_INCORRECT'
         response.message = 'email or password is incorrect'
@@ -239,6 +242,7 @@ exports.updatePassword = async function(req, res){
 
     try{
         newPassword = await bcrypt.hash(newPassword, 10)
+        console.log('step3 mpd new ' + newPassword)
         await User.updatePassword(userOne.id, newPassword)
         response.code = STATUS_RESPONSE.OK
         response.status = 'updated'

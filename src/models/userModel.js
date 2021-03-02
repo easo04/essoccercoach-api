@@ -145,7 +145,7 @@ class User {
 
     static updatePassword(id, password){
         return new Promise((resolve, reject) =>{
-            sql.query("UPDATE users SET password = ? WHERE id = ?", [id, password], (err, res)=>{
+            sql.query("UPDATE users SET password = ? WHERE id = ?", [password, id], (err, res)=>{
                 if(err) {
                     console.log("error: ", err)
                     reject(err)
