@@ -30,6 +30,21 @@ class User {
         })
     }
 
+    static update(user){
+        return new Promise((resolve, reject) =>{
+            sql.query("UPDATE users SET first_name = ?, last_name = ?, user_name = ?, email = ? WHERE id = ?",
+                [user.first_name, user.last_name, user.user_name, user.email, user.id], function (err, res) {       
+                if(err) {
+                    console.log(err)
+                    reject(err)
+                }
+                else{
+                    resolve(res)
+                }
+            })
+        })
+    }
+
     static getUserById(id){
         return new Promise((resolve, reject)=>{
             sql.query("SELECT * FROM users WHERE id = ?", id, function(err, res){
@@ -122,6 +137,19 @@ class User {
                     console.log("error: ", err)
                     reject(err)
                 }else{ 
+                    resolve(res)
+                }
+            })
+        })
+    }
+
+    static updatePassword(id, password){
+        return new Promise((resolve, reject) =>{
+            sql.query("UPDATE users SET password = ? WHERE id = ?", [id, password], (err, res)=>{
+                if(err) {
+                    console.log("error: ", err)
+                    reject(err)
+                }else{
                     resolve(res)
                 }
             })
