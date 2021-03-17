@@ -27,6 +27,10 @@ CREATE TABLE exercices (
 
 DESCRIBE exercices;
 
+alter table exercices modify column description varchar(500);
+alter table exercices modify column disposition varchar(500);
+alter table exercices modify column objectifs varchar(500);
+
 CREATE TABLE users (
     id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     first_name CHAR(50) NOT NULL,
