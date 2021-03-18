@@ -206,3 +206,27 @@ exports.update_exercice_popular = function(req, res) {
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     })
 }
+
+exports.update_exercice = function(req, res) {
+    let response = {
+        code:STATUS_RESPONSE.ERROR,
+        status:'Error'
+    }
+    let exercice = req.body
+
+    //verify body valid
+    if(!exercice.title || !exercice.description){
+        response.message = 'Please provide title/description'
+        res.status(STATUS_RESPONSE.ERROR).json(response)
+    }else{
+        Exercice.updateExercice(exercice).then(resExe => {
+            response = {
+                code:STATUS_RESPONSE.OK,
+                message:'exercice updated'
+            }
+            return res.status(STATUS_RESPONSE.OK).json(response)
+        }).catch(err => {
+            return res.status(STATUS_RESPONSE.ERROR).json(response)
+        })
+    }
+}

@@ -118,5 +118,19 @@ Exercice.getSameCategory = function(category, id){
         })
     })
 }
+Exercice.updateExercice = function(exercice){
+    return new Promise((resolve, reject) =>{
+        sql.query("UPDATE exercices SET title = ?, description = ?, objectifs = ?, disposition = ?,  nbPlayers = ?, category = ? WHERE id = ?", 
+            [exercice.title, exercice.description, exercice.objectifs, exercice.disposition, exercice.nbPlayers, exercice.category, exercice.id], function (err, res) {
+            if(err) {
+                console.log("error: ", err)
+                reject(err)
+            }
+            else{
+                resolve(res)
+            }
+        })
+    })
+}
 
 module.exports = Exercice;
