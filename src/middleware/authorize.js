@@ -10,9 +10,6 @@ const ADMIN_SUBSCRIPTION = 'admin'
 
 const ERROR_CODE_FORBIDDEN = 403
 
-//token free eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImlhdCI6MTYxMjgxMzkzMiwiZXhwIjoxNjEzNDE4NzMyfQ.K_PoiDFxiybCyZ9eHC1V0pRE_DDIYT7xMO56EoafWvA
-//token admin eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjcsImlhdCI6MTYxMjY0NDkxMywiZXhwIjoxNjEzMjQ5NzEzfQ.9ZLLD9gH6bU9Rs_920sn3VV0szUf3pJEMfJZ_TUXimY
-
 function authorize(admin) {
     return [
 

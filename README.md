@@ -51,6 +51,15 @@ npm run dev
 
 -Se déconnecter (DELETE) [api/users/logout](http://localhost:4000/api/users/logout)
 
+**Teams**
+- Créer une équipe (POST) : [api/teams](http://localhost:4000/api/teams)
+
+    Exemple:
+        {
+            "name":"Kodiak U15FAA",
+            "club":"Charlesbourg"
+        }
+
 
 
 

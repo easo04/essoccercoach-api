@@ -17,14 +17,12 @@ exports.get_user_by_id = function(req, res) {
         status:'Error'
     }
     User.getUserById(req.params.id).then((user)=>{
-        console.log('succes')
         response = {
             code:STATUS_RESPONSE.OK,
             user:user
         }
         res.json(response)
     }).catch(err => {
-        console.log(err)
         res.status(STATUS_RESPONSE.ERROR).json(response)
     })
 }
@@ -33,41 +31,41 @@ exports.subscribe = async function(req, res){
     res.header("Access-Control-Allow-Origin", "*")
     let user = req.body;
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
+
     if(!user.first_name || !user.last_name || !user.email || !user.password){
         response.message = 'Please provide firts_name/last_name/email/password'
         return res.status(STATUS_RESPONSE.ERROR).json(response)
-    }else{
+    }
 
-        try{
-            
-            //verify if user already exist
-            const userOne = await User.getOne(user.email)
-            if(userOne){
-                response.message = 'user already exist'
-                return res.status(STATUS_RESPONSE.ERROR).json(response)
-            }
-
-            //if subscription admin, subscription free default
-            if(user.subscription === 'admin'){
-                user.subscription = 'free'
-            }
-
-            //hash password
-            if (user.password) {
-                user.password = await bcrypt.hash(user.password, 10)
-            }
-            
-            //save the user
-            let newUser = new User(user)
-            const userId = await User.subscribe(newUser)
-            if(userId){
-                response = {code:STATUS_RESPONSE.OK, message:'user subscribed'}
-                return res.status(STATUS_RESPONSE.OK).json(response)
-            }
-
-        }catch(err){
+    try{
+        
+        //verify if user already exist
+        const userOne = await User.getOne(user.email)
+        if(userOne){
+            response.message = 'user already exist'
             return res.status(STATUS_RESPONSE.ERROR).json(response)
         }
+
+        //if subscription admin, subscription free default
+        if(user.subscription === 'admin'){
+            user.subscription = 'free'
+        }
+
+        //hash password
+        if (user.password) {
+            user.password = await bcrypt.hash(user.password, 10)
+        }
+        
+        //save the user
+        let newUser = new User(user)
+        const userId = await User.subscribe(newUser)
+        if(userId){
+            response = {code:STATUS_RESPONSE.OK, message:'user subscribed'}
+            return res.status(STATUS_RESPONSE.OK).json(response)
+        }
+
+    }catch(err){
+        return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 }
 
@@ -118,33 +116,32 @@ exports.update = async function(req, res){
     res.header("Access-Control-Allow-Origin", "*")
     let user = req.body;
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
+    
     if(!user.first_name || !user.last_name || !user.email){
         response.message = 'Please provide firts_name/last_name/email/password'
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
-    else{
-
-        try{
-            
-            //verify if user already exist
-            const userOne = await User.getOne(user.email)
-            if(!userOne){
-                response.message = 'user not exist'
-                return res.status(STATUS_RESPONSE.ERROR).json(response)
-            }
-            
-            //save the user
-            let newUser = new User(user)
-            newUser.id = user.id;
-            const userId = await User.update(newUser)
-            if(userId){
-                response = {code:STATUS_RESPONSE.OK, message:'user updated'}
-                return res.status(STATUS_RESPONSE.OK).json(response)
-            }
-
-        }catch(err){
+    
+    try{
+        
+        //verify if user already exist
+        const userOne = await User.getOne(user.email)
+        if(!userOne){
+            response.message = 'user not exist'
             return res.status(STATUS_RESPONSE.ERROR).json(response)
         }
+        
+        //save the user
+        let newUser = new User(user)
+        newUser.id = user.id;
+        const userId = await User.update(newUser)
+        if(userId){
+            response = {code:STATUS_RESPONSE.OK, message:'user updated'}
+            return res.status(STATUS_RESPONSE.OK).json(response)
+        }
+
+    }catch(err){
+        return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 }
 

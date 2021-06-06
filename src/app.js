@@ -33,6 +33,9 @@ app.use('/api/exercices', require('./routes/exercices.js'))
 app.use('/api/tokens', require('./routes/tokens.js'))
 app.use('/api/users', require('./routes/users.js'))
 
+//routes api gestion team
+app.use('/api/teams', require('./routes/teams.js'))
+
 app.listen(app.get('port'), ()=>{
     console.log('server on port ' + app.get('port'))
 })
