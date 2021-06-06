@@ -51,4 +51,62 @@ ALTER TABLE users ADD langue ENUM('fr', 'es', 'en') DEFAULT 'fr' AFTER activated
 
 DESCRIBE users;
 
+/** gestion quipes **/
+
+CREATE TABLE equipes (
+    id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name CHAR(200) NOT NULL,
+    club CHAR(200) NOT NULL,
+    user_creation_name CHAR(60),
+    user_creation INT(10) UNSIGNED,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+);
+
+ALTER TABLE equipes modify column user_creation INT(10) UNSIGNED;
+
+ALTER TABLE equipes ADD CONSTRAINT FK_userequip_ID FOREIGN KEY (user_creation) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+CREATE TABLE joueurs (
+    id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    poste ENUM('G', 'DFC', 'DG', 'DD', 'MC', 'MCO', 'ATT', 'ED', 'EG', 'MD', 'MG'),
+    first_name CHAR(80) NOT NULL,
+    last_name CHAR(80) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    equipe INT(10) UNSIGNED,
+    user INT(10) UNSIGNED,
+    FOREIGN KEY (equipe) REFERENCES equipes(id),
+    FOREIGN KEY (user) REFERENCES users(id)
+);
+
+CREATE TABLE entraineurs (id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    role ENUM('ENT', 'ASS', 'G'), is_admin BOOLEAN DEFAULT FALSE,
+    first_name CHAR(80) NOT NULL, last_name CHAR(80) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, equipe INT(10) UNSIGNED, 
+    user INT(10) UNSIGNED, FOREIGN KEY (equipe) REFERENCES equipes(id),
+    FOREIGN KEY (user) REFERENCES users(id)
+);
+
+CREATE TABLE activites (
+    id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name CHAR(200) NOT NULL,
+    is_match BOOLEAN DEFAULT FALSE,
+    adversaire CHAR(150),date_activite DATE NOT NULL,
+    heure CHAR(10) NOT NULL,heure_arrive CHAR(10),
+    adresse CHAR(200),link_adresse CHAR(255),
+    resultat CHAR(20),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    equipe INT(10) UNSIGNED,
+    FOREIGN KEY (equipe) REFERENCES equipes(id)
+);
+
+CREATE TABLE disponibilite (
+    id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    present BOOLEAN DEFAULT FALSE,
+    joueur INT(10) UNSIGNED,
+    activite INT(10) UNSIGNED,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
+    FOREIGN KEY (joueur) REFERENCES joueurs(id),
+    FOREIGN KEY (activite) REFERENCES activites(id)
+);
+
 SHOW TABLES;
