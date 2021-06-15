@@ -79,10 +79,13 @@ CREATE TABLE joueurs (
 );
 
 CREATE TABLE entraineurs (id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    role ENUM('ENT', 'ASS', 'G'), is_admin BOOLEAN DEFAULT FALSE,
+    role ENUM('ENT', 'ASS', 'G'),
+    is_admin BOOLEAN DEFAULT FALSE,
     first_name CHAR(80) NOT NULL, last_name CHAR(80) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, equipe INT(10) UNSIGNED, 
-    user INT(10) UNSIGNED, FOREIGN KEY (equipe) REFERENCES equipes(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    equipe INT(10) UNSIGNED, 
+    user INT(10) UNSIGNED,
+    FOREIGN KEY (equipe) REFERENCES equipes(id),
     FOREIGN KEY (user) REFERENCES users(id)
 );
 

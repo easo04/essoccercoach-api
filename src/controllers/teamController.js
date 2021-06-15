@@ -1,5 +1,7 @@
-let Team = require('../models/TeamModel.js')
-let TeamDAO = require('../models/dao/TeamDAO.js')
+const Team = require('../models/TeamModel.js')
+const TeamDAO = require('../models/dao/TeamDAO.js')
+const TeamService = require('../services/TeamService')
+const UserService = require('../services/UserService')
 
 const STATUS_RESPONSE = {
     OK:200,
@@ -22,6 +24,8 @@ exports.add_team = async function (req, res){
         const newTeam = new Team(name, club, req.user.id, req.user.user_name)
         const teamId = await TeamDAO.createTeam(newTeam)
         if(teamId){
+
+            //TODO ADD COACH ADMIN
             response = {code:STATUS_RESPONSE.OK, message:'team created', teamId}
             return res.status(STATUS_RESPONSE.OK).json(response)
         }
@@ -37,6 +41,9 @@ exports.get_team_by_id = async function(req, res){
 
     try{
         const team = await TeamDAO.getTeamById(req.params.id)
+
+        //TODO valider si l'usager a accès à cette équipe avant de le retourner
+
         response = {
             code:STATUS_RESPONSE.OK,
             team
@@ -47,10 +54,52 @@ exports.get_team_by_id = async function(req, res){
     }
 }
 
-exports.get_teams = function(req, res){
-
+exports.get_teams_by_user = function(req, res){
+    
 }
+
+exports.delete_team = function(req, res){
+    let response = {
+        code:STATUS_RESPONSE.ERROR,
+        status:'Error'
+    }
+    TeamDAO.removeTeam(req.params.id).then(() => {
+        response = {
+            code:STATUS_RESPONSE.OK,
+            message:'team deleted'
+        }
+        return res.status(STATUS_RESPONSE.OK).json(response)
+    }).catch(()=>res.status(STATUS_RESPONSE.ERROR).json(response))
+}
+
+exports.get_summary_teams = async function(req, res){
+    let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'}
+
+    const idCurrentuser = req.user.id
+
+    try{
+        const teams =  await TeamService.getAllTeamsByUser(idCurrentuser)
+
+        const canAddTeam = UserService.isUserAdminOrPremium(req.user) 
+
+        response = {code:STATUS_RESPONSE.OK, status:'Succes', canAddTeam, teams}
+
+        return res.status(STATUS_RESPONSE.OK).json(response)
+    }catch(error){
+        console.log(error)
+        return res.status(STATUS_RESPONSE.ERROR).json(response)
+    }
+}
+
+/*functions controller*/
 
 function validateTeamDTO(teamDTO){
     return teamDTO.name !== undefined; 
 }
+
+function canAddTeam(user){
+
+}
+
+
+

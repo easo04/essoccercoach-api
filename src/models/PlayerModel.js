@@ -1,22 +1,10 @@
 'user strict'
-const sql = require('../database')
-let User = require('../models/userModel')
-
-class Player extends User {
-    #poste
-    #equipe
-    constructor(user, poste, equipe){
-        super(user)
-        this.poste = poste
-        this.equipe = equipe
-    }
-
-    get poste(){
-        return this.poste
-    }
-
-    get equipe(){
-        return this.equipe
+class Player {
+    constructor(playerDTO){
+        this.first_name = playerDTO.first_name
+        this.last_name = playerDTO.last_name
+        this.poste = playerDTO.poste
+        this.equipe = playerDTO.equipe
     }
 }
 

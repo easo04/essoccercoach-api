@@ -1,6 +1,6 @@
 
-const jwt = require('express-jwt');
-let User = require('../models/userModel.js')
+const jwt = require('express-jwt')
+let UserDAO = require('../models/dao/UserDAO')
 
 module.exports = authorize
 
@@ -20,7 +20,7 @@ function authorize(admin) {
         async (req, res, next) => {
             
             // get user with id from token 'sub' (subject) property
-            const user = await User.getUserById(req.user.sub)
+            const user = await UserDAO.getUserById(req.user.sub)
 
             // check user still exists
             if (!user){

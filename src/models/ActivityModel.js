@@ -2,7 +2,8 @@
 const sql = require('../database')
 
 class Activity {
-    constructor(email){
+    constructor(activityDTO){
+        
     }
 }
 

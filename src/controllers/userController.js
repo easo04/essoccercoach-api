@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 let User = require('../models/userModel.js')
+let UserDAO = require('../models/dao/UserDAO')
 
 const STATUS_RESPONSE = {
     OK:200,
@@ -16,7 +17,7 @@ exports.get_user_by_id = function(req, res) {
         code:STATUS_RESPONSE.ERROR,
         status:'Error'
     }
-    User.getUserById(req.params.id).then((user)=>{
+    UserDAO.getUserById(req.params.id).then((user)=>{
         response = {
             code:STATUS_RESPONSE.OK,
             user:user
@@ -40,7 +41,7 @@ exports.subscribe = async function(req, res){
     try{
         
         //verify if user already exist
-        const userOne = await User.getOne(user.email)
+        const userOne = await UserDAO.getOne(user.email)
         if(userOne){
             response.message = 'user already exist'
             return res.status(STATUS_RESPONSE.ERROR).json(response)
@@ -58,7 +59,7 @@ exports.subscribe = async function(req, res){
         
         //save the user
         let newUser = new User(user)
-        const userId = await User.subscribe(newUser)
+        const userId = await UserDAO.subscribe(newUser)
         if(userId){
             response = {code:STATUS_RESPONSE.OK, message:'user subscribed'}
             return res.status(STATUS_RESPONSE.OK).json(response)
@@ -81,7 +82,7 @@ exports.subscribeByAdmin = async function(req, res){
         try{
             
             //verify if user already exist
-            const userOne = await User.getOne(user.email)
+            const userOne = await UserDAO.getOne(user.email)
             if(userOne){
                 response.message = 'user already exist'
                 return res.status(STATUS_RESPONSE.ERROR).json(response)
@@ -100,7 +101,7 @@ exports.subscribeByAdmin = async function(req, res){
             
             //save the user
             let newUser = new User(user)
-            const userId = await User.subscribe(newUser)
+            const userId = await UserDAO.subscribe(newUser)
             if(userId){
                 response = {code:STATUS_RESPONSE.OK, message:'user subscribed'}
                 return res.status(STATUS_RESPONSE.OK).json(response)
@@ -125,7 +126,7 @@ exports.update = async function(req, res){
     try{
         
         //verify if user already exist
-        const userOne = await User.getOne(user.email)
+        const userOne = await UserDAO.getOne(user.email)
         if(!userOne){
             response.message = 'user not exist'
             return res.status(STATUS_RESPONSE.ERROR).json(response)
@@ -134,7 +135,7 @@ exports.update = async function(req, res){
         //save the user
         let newUser = new User(user)
         newUser.id = user.id;
-        const userId = await User.update(newUser)
+        const userId = await UserDAO.update(newUser)
         if(userId){
             response = {code:STATUS_RESPONSE.OK, message:'user updated'}
             return res.status(STATUS_RESPONSE.OK).json(response)
@@ -151,7 +152,7 @@ exports.login = async function(req, res){
     const {email, password} = req.body
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
     try{
-        const userOne = await User.getOne(email, true)
+        const userOne = await UserDAO.getOne(email, true)
         if (!userOne || !(await bcrypt.compare(password, userOne.password))){
             response.status = 'EMAIL_PASSWORD_INCORRECT'
             response.message = 'email or password is incorrect'
@@ -162,7 +163,7 @@ exports.login = async function(req, res){
         if(userOne.token && userOne.token !== TOKEN_INVALID){
             //response.status = 'ALREADY_LOGGED'
             //response.message = 'user already logged'
-            User.deleteToken(userOne.id)
+            UserDAO.deleteToken(userOne.id)
             //return res.status(STATUS_RESPONSE.ALREADY_LOGGED).json(response)
         }
 
@@ -180,7 +181,7 @@ exports.login = async function(req, res){
 
         // authentication successful
         const token = jwt.sign({ sub: userOne.id }, process.env.SECRET_KEY, { expiresIn: '1d' })
-        await User.updateToken(token, userOne.id)
+        await UserDAO.updateToken(token, userOne.id)
         response = {code:STATUS_RESPONSE.OK, user:userResponse, token: token}
         return res.status(STATUS_RESPONSE.OK).json(response)
     }catch(err){
@@ -189,7 +190,7 @@ exports.login = async function(req, res){
 }
 
 exports.get_all_users = function(req, res, next){
-    User.getAll().then(users => {
+    UserDAO.getAll().then(users => {
         let response = {
             code:STATUS_RESPONSE.OK,
             users:users
@@ -204,7 +205,7 @@ exports.logout = async function(req, res){
         status:'error'
     }
     try{
-        await User.deleteToken(req.user.id)
+        await UserDAO.deleteToken(req.user.id)
         response.code = STATUS_RESPONSE.OK
         response.status = 'logout'
         res.status(STATUS_RESPONSE.OK).json(response)
@@ -227,7 +228,7 @@ exports.updatePassword = async function(req, res){
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
-    const userOne = await User.getOne(email, true)
+    const userOne = await UserDAO.getOne(email, true)
     if (!userOne || !(await bcrypt.compare(oldPassword, userOne.password))){
         response.status = 'EMAIL_PASSWORD_INCORRECT'
         response.message = 'email or password is incorrect'
@@ -236,7 +237,7 @@ exports.updatePassword = async function(req, res){
 
     try{
         newPassword = await bcrypt.hash(newPassword, 10)
-        await User.updatePassword(userOne.id, newPassword)
+        await UserDAO.updatePassword(userOne.id, newPassword)
         response.code = STATUS_RESPONSE.OK
         response.status = 'updated'
         response.message = 'password updated'
