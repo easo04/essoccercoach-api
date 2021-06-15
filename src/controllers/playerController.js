@@ -1,5 +1,6 @@
-let Player = require('../models/PlayerModel')
-let PlayerDAO = require('../models/dao/PlayerDAO')
+const Player = require('../models/PlayerModel')
+const PlayerDAO = require('../models/dao/PlayerDAO')
+const CoachDAO = require('../models/dao/CoachDAO')
 
 const STATUS_RESPONSE = {
     OK:200,
@@ -16,7 +17,13 @@ exports.add_player = async function (req, res){
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
-    let {first_name, last_name, poste, equipe} = playerDTO
+    const isAdminOfTeam = await CoachDAO.isAdminOfTeam(equipe, req.user.id)
+    if(!isAdminOfTeam){
+        response.message = 'Acces denied'
+        return res.status(STATUS_RESPONSE.ERROR).json(response)
+    }
+
+    const {first_name, last_name, poste, equipe} = playerDTO
 
     try{
         const newPlayer = new Player(first_name, last_name, poste, admin, equipe)
@@ -33,19 +40,12 @@ exports.add_player = async function (req, res){
 }
 
 exports.get_player_by_id = async function(req, res){
-    let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'}
 
     try{
         const player = await PlayerDAO.getPlayerById(req.params.id)
-
-        response = {
-            code:STATUS_RESPONSE.OK,
-            player
-        }
-
-        res.json(response)
+        res.json({code:STATUS_RESPONSE.OK,player})
     }catch(error){
-        return res.status(STATUS_RESPONSE.ERROR).json(response)
+        return res.status(STATUS_RESPONSE.ERROR).json({code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'})
     }
 }
 

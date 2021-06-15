@@ -1,5 +1,5 @@
-let Coach = require('../models/CoachModel')
-let CoachDAO = require('../models/dao/CoachDAO.js')
+const Coach = require('../models/CoachModel')
+const CoachDAO = require('../models/dao/CoachDAO.js')
 
 const STATUS_RESPONSE = {
     OK:200,
@@ -11,14 +11,18 @@ exports.add_coach = async function (req, res){
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'}
     const coachDTO = req.body
 
-    console.log('coachDTO ' + coachDTO.first_name)
-
     if(!validateCoachDTO(coachDTO)){
         response.message = 'DTO invalid'
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
-    let {first_name, last_name, role, admin, equipe} = coachDTO
+    const isAdminOfTeam = await CoachDAO.isAdminOfTeam(equipe, req.user.id)
+    if(!isAdminOfTeam){
+        response.message = 'Acces denied'
+        return res.status(STATUS_RESPONSE.ERROR).json(response)
+    }
+
+    const {first_name, last_name, role, admin, equipe} = coachDTO
 
     try{
         const newCoach = new Coach(first_name, last_name, role, admin, equipe)
@@ -28,7 +32,6 @@ exports.add_coach = async function (req, res){
             return res.status(STATUS_RESPONSE.OK).json(response)
         }
     }catch(error){
-        console.log('error controller ' + error)
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
@@ -36,19 +39,12 @@ exports.add_coach = async function (req, res){
 }
 
 exports.get_coach_by_id = async function(req, res){
-    let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'}
 
     try{
         const coach = await CoachDAO.getCoachById(req.params.id)
-
-        response = {
-            code:STATUS_RESPONSE.OK,
-            coach
-        }
-
-        res.json(response)
+        res.json({code:STATUS_RESPONSE.OK,coach})
     }catch(error){
-        return res.status(STATUS_RESPONSE.ERROR).json(response)
+        return res.status(STATUS_RESPONSE.ERROR).json({code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'})
     }
 }
 
