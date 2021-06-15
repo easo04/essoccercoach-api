@@ -2,6 +2,8 @@ const Team = require('../models/TeamModel.js')
 const TeamDAO = require('../models/dao/TeamDAO.js')
 const TeamService = require('../services/TeamService')
 const UserService = require('../services/UserService')
+const CoachDAO = require('../models/dao/CoachDAO.js')
+const Coach = require('../models/CoachModel.js')
 
 const STATUS_RESPONSE = {
     OK:200,
@@ -12,6 +14,7 @@ const STATUS_RESPONSE = {
 exports.add_team = async function (req, res){
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'}
     const teamDTO = req.body
+    const user = req.user
 
     if(!validateTeamDTO(teamDTO)){
         response.message = 'DTO invalid'
@@ -21,12 +24,13 @@ exports.add_team = async function (req, res){
     let {name, club} = teamDTO
 
     try{
-        const newTeam = new Team(name, club, req.user.id, req.user.user_name)
+        const newTeam = new Team(name, club, user.id, user.user_name)
         const teamId = await TeamDAO.createTeam(newTeam)
         if(teamId){
+            const newCoach = new Coach(user.first_name, user.last_name, 'ENT', true, teamId)
+            const coachId = CoachDAO.createCoach(newCoach)
 
-            //TODO ADD COACH ADMIN
-            response = {code:STATUS_RESPONSE.OK, message:'team created', teamId}
+            response = {code:STATUS_RESPONSE.OK, message:'team created', teamId, coachId}
             return res.status(STATUS_RESPONSE.OK).json(response)
         }
     }catch(error){
@@ -95,10 +99,6 @@ exports.get_summary_teams = async function(req, res){
 
 function validateTeamDTO(teamDTO){
     return teamDTO.name !== undefined; 
-}
-
-function canAddTeam(user){
-
 }
 
 
