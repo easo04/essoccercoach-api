@@ -1,6 +1,7 @@
 const PlayerDAO = require('../models/dao/PlayerDAO.js')
 const CoachDAO = require('../models/dao/CoachDAO.js')
 const TeamDAO = require('../models/dao/TeamDAO.js')
+const ActivityDAO = require('../models/dao/ActivityDAO.js')
 
 const USER_ROLES = {
     COACH: 'COACH',
@@ -24,7 +25,7 @@ class TeamService{
     static async getTeamsCoachRoleDTO(idCurrentuser){
         let teamsWithCoachRole =  await TeamDAO.getAllTeamsByUserRoleCoach(idCurrentuser)
         let teams = []
-        this.setDetailTeamsDTO(teams, teamsWithCoachRole, idCurrentuser)
+        await this.setDetailTeamsDTO(teams, teamsWithCoachRole, idCurrentuser)
     
         return {userRole: USER_ROLES.COACH, teams} 
     }
@@ -32,25 +33,25 @@ class TeamService{
     static async getTeamsPlayerRoleDTO(idCurrentuser){
         let teamsWithPlayerRole = await TeamDAO.getAllTeamsByUserRolePlayer(idCurrentuser)
         let teams = []
-        this.setDetailTeamsDTO(teams, teamsWithPlayerRole, idCurrentuser)
+        await this.setDetailTeamsDTO(teams, teamsWithPlayerRole, idCurrentuser)
     
         return {userRole: USER_ROLES.PLAYER, teams}
     }
     
-    static setDetailTeamsDTO(teams, teamsWithRole, user){
-        teamsWithRole.forEach(async team => {
-            let teamDTO = await this.toDTO(team, user)
+    static async setDetailTeamsDTO(teams, teamsWithRole, user){
+        for(let i = 0; i < teamsWithRole.length; i++){
+            const teamDTO = await this.toDTO(teamsWithRole[0], user)
             teams.push(teamDTO)
-        })
+        }
     }
     
     
     static async toDTO(team, user){
         let teamDTO = team
-    
+
         teamDTO.players = await PlayerDAO.getAllPlayersByTeam(team.id)
         teamDTO.coachs = await CoachDAO.getAllCoachsByTeam(team.id)
-        teamDTO.activities = []
+        teamDTO.activities = await ActivityDAO.getAllActivitiesByTeam(team.id)
     
         let isAdmin = await CoachDAO.isAdminOfTeam(team.id, user)
     

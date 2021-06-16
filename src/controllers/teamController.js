@@ -21,6 +21,11 @@ exports.add_team = async function (req, res){
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
+    if(!UserService.isUserAdminOrPremium(req.user)){
+        response.message = 'User role invalid'
+        return res.status(STATUS_RESPONSE.ERROR).json(response)
+    }
+
     let {name, club} = teamDTO
 
     try{
@@ -46,13 +51,14 @@ exports.get_team_by_id = async function(req, res){
     try{
         const team = await TeamDAO.getTeamById(req.params.id)
 
-        //TODO valider si l'usager a accès à cette équipe avant de le retourner
-
-        response = {
-            code:STATUS_RESPONSE.OK,
-            team
+        if(team){
+            const canUserReadTeam = await UserService.userCanReadATeam(req.user.id, team.id)
+            if(!canUserReadTeam){
+                return res.status(STATUS_RESPONSE.ERROR).json({code:STATUS_RESPONSE.ERROR, status:'Error', message:'Acces denied'})
+            }
         }
-        res.json(response)
+        
+        res.json({code:STATUS_RESPONSE.OK,team})
     }catch(error){
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
@@ -62,11 +68,18 @@ exports.get_teams_by_user = function(req, res){
     
 }
 
-exports.delete_team = function(req, res){
+exports.delete_team = async function(req, res){
     let response = {
         code:STATUS_RESPONSE.ERROR,
         status:'Error'
     }
+
+    const isAdminOfTeam = await CoachDAO.isAdminOfTeam(req.params.id, req.user.id)
+    if(!isAdminOfTeam){
+        response.message = 'Acces denied'
+        return res.status(STATUS_RESPONSE.ERROR).json(response)
+    }
+
     TeamDAO.removeTeam(req.params.id).then(() => {
         response = {
             code:STATUS_RESPONSE.OK,

@@ -1,5 +1,6 @@
 const Coach = require('../models/CoachModel')
 const CoachDAO = require('../models/dao/CoachDAO.js')
+const UserService = require('../services/UserService')
 
 const STATUS_RESPONSE = {
     OK:200,
@@ -16,7 +17,7 @@ exports.add_coach = async function (req, res){
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
-    const isAdminOfTeam = await CoachDAO.isAdminOfTeam(equipe, req.user.id)
+    const isAdminOfTeam = await CoachDAO.isAdminOfTeam(coachDTO.equipe, req.user.id)
     if(!isAdminOfTeam){
         response.message = 'Acces denied'
         return res.status(STATUS_RESPONSE.ERROR).json(response)
@@ -42,17 +43,32 @@ exports.get_coach_by_id = async function(req, res){
 
     try{
         const coach = await CoachDAO.getCoachById(req.params.id)
+
+        if(coach){
+            const canUserReadTeam = await UserService.userCanReadATeam(req.user.id, coach.equipe)
+            if(!canUserReadTeam){
+                return res.status(STATUS_RESPONSE.ERROR).json({code:STATUS_RESPONSE.ERROR, status:'Error', message:'Acces denied'})
+            }
+        }
+        
         res.json({code:STATUS_RESPONSE.OK,coach})
     }catch(error){
         return res.status(STATUS_RESPONSE.ERROR).json({code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'})
     }
 }
 
-exports.delete_coach = function(req, res){
+exports.delete_coach = async function(req, res){
     let response = {
         code:STATUS_RESPONSE.ERROR,
         status:'Error'
     }
+
+    /*const isAdminOfTeam = await CoachDAO.isAdminOfTeam(equipe, req.user.id)
+    if(!isAdminOfTeam){
+        response.message = 'Acces denied'
+        return res.status(STATUS_RESPONSE.ERROR).json(response)
+    }*/
+
     CoachDAO.deleteCoachById(req.params.id).then(() => {
         response = {
             code:STATUS_RESPONSE.OK,

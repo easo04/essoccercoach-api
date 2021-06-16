@@ -1,6 +1,6 @@
-const Player = require('../models/PlayerModel')
-const PlayerDAO = require('../models/dao/PlayerDAO')
-const CoachDAO = require('../models/dao/CoachDAO')
+const Activity = require('../models/ActivityModel')
+const ActivityDAO = require('../models/dao/ActivityDAO')
+const CoachDAO = require('../models/dao/CoachDAO.js')
 const UserService = require('../services/UserService')
 
 const STATUS_RESPONSE = {
@@ -9,26 +9,26 @@ const STATUS_RESPONSE = {
     ALREADY_LOGGED:400
 }
 
-exports.add_player = async function (req, res){
+exports.add_activity = async function (req, res){
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'}
-    const playerDTO = req.body
+    const activityDTO = req.body
 
-    if(!validatePlayerDTO(playerDTO)){
+    if(!validateActivityDTO(activityDTO)){
         response.message = 'DTO invalid'
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
-    const isAdminOfTeam = await CoachDAO.isAdminOfTeam(playerDTO.equipe, req.user.id)
+    const isAdminOfTeam = await CoachDAO.isAdminOfTeam(activityDTO.equipe, req.user.id)
     if(!isAdminOfTeam){
         response.message = 'Acces denied'
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
     try{
-        const newPlayer = new Player(playerDTO)
-        const playerId = await PlayerDAO.createPlayer(newPlayer)
-        if(playerId){
-            response = {code:STATUS_RESPONSE.OK, message:'player created', playerId}
+        const newActivity = new Activity(activityDTO)
+        const activityId = await ActivityDAO.createActivity(newActivity)
+        if(activityId){
+            response = {code:STATUS_RESPONSE.OK, message:'activity created', activityId}
             return res.status(STATUS_RESPONSE.OK).json(response)
         }
     }catch(error){
@@ -38,46 +38,46 @@ exports.add_player = async function (req, res){
     return res.status(STATUS_RESPONSE.ERROR).json(response)
 }
 
-exports.get_player_by_id = async function(req, res){
+exports.get_activity_by_id = async function(req, res){
 
     try{
-        const player = await PlayerDAO.getPlayerById(req.params.id)
+        const activity = await ActivityDAO.getActivityById(req.params.id)
 
-        if(player){
-            const canUserReadTeam = await UserService.userCanReadATeam(req.user.id, player.equipe)
+        if(activity){
+            const canUserReadTeam = await UserService.userCanReadATeam(req.user.id, activity.equipe)
             if(!canUserReadTeam){
                 return res.status(STATUS_RESPONSE.ERROR).json({code:STATUS_RESPONSE.ERROR, status:'Error', message:'Acces denied'})
             }
         }
 
-        res.json({code:STATUS_RESPONSE.OK,player})
+        return res.status(STATUS_RESPONSE.OK).json({code:STATUS_RESPONSE.OK,activity})
     }catch(error){
         return res.status(STATUS_RESPONSE.ERROR).json({code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'})
     }
 }
 
-exports.delete_player = async function(req, res){
+exports.delete_activity = async function(req, res){
     let response = {
         code:STATUS_RESPONSE.ERROR,
         status:'Error'
     }
-    
+
     /*const isAdminOfTeam = await CoachDAO.isAdminOfTeam(equipe, req.user.id)
     if(!isAdminOfTeam){
         response.message = 'Acces denied'
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }*/
 
-    PlayerDAO.deletePlayerById(req.params.id).then(() => {
+    ActivityDAO.deleteActivityById(req.params.id).then(() => {
         response = {
             code:STATUS_RESPONSE.OK,
-            message:'player deleted'
+            message:'activity deleted'
         }
         return res.status(STATUS_RESPONSE.OK).json(response)
     }).catch(()=>res.status(STATUS_RESPONSE.ERROR).json(response))
 }
 
 /*functions controller*/
-function validatePlayerDTO(playerDTO){
-    return playerDTO.first_name && playerDTO.last_name && playerDTO.poste && playerDTO.equipe; 
+function validateActivityDTO(activityDTO){
+    return activityDTO.name && activityDTO.is_match && activityDTO.date_activite && activityDTO.heure && activityDTO.adresse && activityDTO.equipe
 }

@@ -8,6 +8,12 @@ const SELECT_TEAMS_BY_USER_ROLE_PLAYER = 'SELECT eq.* FROM equipes AS eq INNER J
 
 const SELECT_TEAMS_BY_USER_CREATED = 'SELECT * FROM equipes WHERE user_creation = ?' 
 
+const SELECT_TEAMS_BY_PLAYER_AND_TEAM = 'SELECT eq.* FROM equipes AS eq INNER JOIN joueurs AS j ON ' +
+                                        'j.equipe = eq.id WHERE j.user = ? AND eq.id = ?'
+
+const SELECT_TEAMS_BY_COACH_AND_TEAM = 'SELECT eq.* FROM equipes AS eq INNER JOIN entraineurs AS e ON ' +
+                                        'e.equipe = eq.id WHERE e.user = ? AND eq.id = ?'
+
 class TeamDAO{
     static createTeam(team){
         return new Promise((resolve, reject) =>{
@@ -82,6 +88,32 @@ class TeamDAO{
                 }
                 else{
                     resolve(response)
+                }
+            })
+        })
+    }
+
+    static getTeamByPlayerAndTeam(idUser, idTeam){
+        return new Promise((resolve, reject)=>{
+            sql.query(SELECT_TEAMS_BY_PLAYER_AND_TEAM, [idUser, idTeam], function(error, response){
+                if(error) {
+                    reject(error)
+                }
+                else{
+                    resolve(response[0])
+                }
+            })
+        })
+    }
+
+    static getTeamByCoachAndTeam(idUser, idTeam){
+        return new Promise((resolve, reject)=>{
+            sql.query(SELECT_TEAMS_BY_COACH_AND_TEAM, [idUser, idTeam], function(error, response){
+                if(error) {
+                    reject(error)
+                }
+                else{
+                    resolve(response[0])
                 }
             })
         })
