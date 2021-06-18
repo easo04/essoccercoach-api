@@ -19,6 +19,17 @@ class AvailabilityDAO extends DataBaseDAO{
         let availabilities = await this.querySelectAll(SELECT_AVAILABILITY_BY_ACTIVITY, idActivity)
         return availabilities.map(availability => toDTO(availability))
     }
+    static updateAvailability(availabilityDTO){
+        return new Promise((resolve, reject) =>{
+            sql.query(`UPDATE ${table} SET present = ? WHERE id = ?`, [availabilityDTO.present, availabilityDTO.id], function (error, response) {
+                if(error) {
+                    reject(error)
+                }else{
+                    resolve(response)
+                }
+            })
+        })
+    }
 }
 
 function toDTO(availability){

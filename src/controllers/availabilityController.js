@@ -30,8 +30,23 @@ exports.add_availability = async function (req, res){
     return res.status(STATUS_RESPONSE.ERROR).json(response)
 }
 
-exports.update_availability = async function(req, res){
-    
+exports.update_availability = function(req, res){
+    let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'}
+    const availabilityDTO = req.body
+
+    if(availabilityDTO.id === undefined || availabilityDTO.present === undefined){
+        response.message = 'DTO invalid'
+        return res.status(STATUS_RESPONSE.ERROR).json(response)
+    }
+
+    AvailabilityDAO.updateAvailability(availabilityDTO).then(() => {
+        response = {
+            code:STATUS_RESPONSE.OK,
+            message:'availability updated'
+        }
+        return res.status(STATUS_RESPONSE.OK).json(response)
+    }).catch(()=>res.status(STATUS_RESPONSE.ERROR).json(response))
+
 }
 
 exports.get_availability_by_id = async function(req, res){
