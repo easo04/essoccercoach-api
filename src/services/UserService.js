@@ -11,6 +11,16 @@ class UserService{
 
         return teamCoach !== undefined || teamPlayer !== undefined
     }
+
+    static getUserDetailsDTO(user){
+        const userResponse = user
+        
+        userResponse.isAdmin = user.subscription === 'admin'
+        userResponse.showSeances = this.isUserAdminOrPremium(user)
+        userResponse.showTeams = this.isUserAdminOrPremium(user)
+
+        return userResponse
+    }
 }
 
 module.exports = UserService

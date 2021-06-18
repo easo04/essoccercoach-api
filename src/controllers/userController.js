@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 let User = require('../models/userModel.js')
-let UserDAO = require('../models/dao/UserDAO')
+let UserDAO = require('../models/dao/UserDAO');
+const UserService = require('../services/UserService.js');
 
 const STATUS_RESPONSE = {
     OK:200,
@@ -159,32 +160,16 @@ exports.login = async function(req, res){
             return res.status(STATUS_RESPONSE.ERROR).json(response)
         }
 
-        //verify if user is already logged
-        if(userOne.token && userOne.token !== TOKEN_INVALID){
-            //response.status = 'ALREADY_LOGGED'
-            //response.message = 'user already logged'
-            UserDAO.deleteToken(userOne.id)
-            //return res.status(STATUS_RESPONSE.ALREADY_LOGGED).json(response)
-        }
+        const token = await getUserToken(userOne)
+        console.log('update user token')
+        
+        const userResponse = UserService.getUserDetailsDTO(userOne)
+        console.log(userResponse)
 
-        //formate user response
-        const userResponse = {
-            id:userOne.id,
-            first_name:userOne.first_name,
-            last_name:userOne.last_name,
-            user_name:userOne.user_name,
-            email:userOne.email,
-            created_at:userOne.created_at,
-            image_url:userOne.image_url,
-            subscription:userOne.subscription
-        }
-
-        // authentication successful
-        const token = jwt.sign({ sub: userOne.id }, process.env.SECRET_KEY, { expiresIn: '1d' })
-        await UserDAO.updateToken(token, userOne.id)
         response = {code:STATUS_RESPONSE.OK, user:userResponse, token: token}
         return res.status(STATUS_RESPONSE.OK).json(response)
     }catch(err){
+        console.log(err)
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 }
@@ -245,4 +230,18 @@ exports.updatePassword = async function(req, res){
     }catch(err){
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
+}
+
+async function getUserToken(user){
+    if(user.token && user.token !== TOKEN_INVALID){
+        //response.status = 'ALREADY_LOGGED'
+        //response.message = 'user already logged'
+        UserDAO.deleteToken(user.id)
+        //return res.status(STATUS_RESPONSE.ALREADY_LOGGED).json(response)
+    }
+
+    const token = jwt.sign({ sub:user.id }, process.env.SECRET_KEY, { expiresIn: '1d' })
+    await UserDAO.updateToken(token, user.id)
+
+    return token
 }
