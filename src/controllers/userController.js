@@ -161,15 +161,12 @@ exports.login = async function(req, res){
         }
 
         const token = await getUserToken(userOne)
-        console.log('update user token')
         
         const userResponse = UserService.getUserDetailsDTO(userOne)
-        console.log(userResponse)
 
         response = {code:STATUS_RESPONSE.OK, user:userResponse, token: token}
         return res.status(STATUS_RESPONSE.OK).json(response)
     }catch(err){
-        console.log(err)
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 }

@@ -18,6 +18,7 @@ class UserService{
         userResponse.isAdmin = user.subscription === 'admin'
         userResponse.showSeances = this.isUserAdminOrPremium(user)
         userResponse.showTeams = this.isUserAdminOrPremium(user)
+        userResponse.canCreateATeam = this.isUserAdminOrPremium(user)
 
         return userResponse
     }
