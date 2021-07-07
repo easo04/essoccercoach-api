@@ -36,7 +36,7 @@ app.use('/api/users', require('./routes/users.js'))
 //routes api gestion team
 app.use('/api/teams', require('./routes/teams.js'))
 app.use('/api/coachs', require('./routes/coach.js')) //TODO voir si on expose ce service à l'externe
-app.use('/api/players', require('./routes/coach.js')) //TODO voir si on expose ce service à l'externe
+app.use('/api/players', require('./routes/player.js')) //TODO voir si on expose ce service à l'externe
 app.use('/api/activities', require('./routes/activities')) //TODO voir si on expose ce service à l'externe
 app.use('/api/availabilities', require('./routes/availabilities')) //TODO voir si on expose ce service à l'externe
 
