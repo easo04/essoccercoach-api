@@ -20,6 +20,14 @@ exports.add_availability = async function (req, res){
     }
 
     try{
+        
+        if(availabilityDTO.availabilityId){
+            availabilityDTO.id = availabilityDTO.availabilityId
+            await AvailabilityDAO.updateAvailability(availabilityDTO)
+            response = {code:STATUS_RESPONSE.OK, message:'activity updated', 'availabilityId' : availabilityDTO.id}
+            return res.status(STATUS_RESPONSE.OK).json(response)
+        }
+
         const newAvailability = new Availability(availabilityDTO)
         const availabilityId = await AvailabilityDAO.createAvailability(newAvailability)
         if(availabilityId){
@@ -27,6 +35,7 @@ exports.add_availability = async function (req, res){
             return res.status(STATUS_RESPONSE.OK).json(response)
         }
     }catch(error){
+        console.log(error)
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
@@ -106,5 +115,5 @@ exports.delete_availability = async function(req, res){
 
 /*functions controller*/
 function validateAvailabilityDTO(availabilityDTO){
-    return availabilityDTO.present && availabilityDTO.joueur && availabilityDTO.activite
+    return availabilityDTO.present !== undefined && availabilityDTO.joueur && availabilityDTO.activite
 }

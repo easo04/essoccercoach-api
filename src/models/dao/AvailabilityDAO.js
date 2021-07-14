@@ -27,7 +27,7 @@ class AvailabilityDAO extends DataBaseDAO{
     } 
     static updateAvailability(availabilityDTO){
         return new Promise((resolve, reject) =>{
-            sql.query(`UPDATE ${table} SET present = ? WHERE id = ?`, [availabilityDTO.present, availabilityDTO.id], function (error, response) {
+            sql.query(`UPDATE ${TABLE_AVAILABILITY} SET present = ? WHERE id = ?`, [availabilityDTO.present, availabilityDTO.id], function (error, response) {
                 if(error) {
                     reject(error)
                 }else{
