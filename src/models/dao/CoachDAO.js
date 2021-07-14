@@ -1,5 +1,4 @@
 const DataBaseDAO = require('./DataBaseDAO')
-const sql = require('../../database')
 
 const TABLE_COACH = 'entraineurs'
 

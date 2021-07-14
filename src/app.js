@@ -40,6 +40,9 @@ app.use('/api/players', require('./routes/player.js')) //TODO voir si on expose 
 app.use('/api/activities', require('./routes/activities')) //TODO voir si on expose ce service à l'externe
 app.use('/api/availabilities', require('./routes/availabilities')) //TODO voir si on expose ce service à l'externe
 
+//routes api gestion activities
+app.use('/api/notes', require('./routes/notes.js'))
+
 app.listen(app.get('port'), ()=>{
     console.log('server on port ' + app.get('port'))
 })
