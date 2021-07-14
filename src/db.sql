@@ -153,7 +153,7 @@ CREATE TABLE seance(
 
 CREATE TABLE seance_exercice(
     id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    seance INT(10) UNSIGNED,
+    seance_id INT(10) UNSIGNED,
     title VARCHAR(300) NOT NULL,
     description VARCHAR(300) NOT NULL,
     objectifs VARCHAR(300),
@@ -161,8 +161,8 @@ CREATE TABLE seance_exercice(
     time VARCHAR(10),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     image_url VARCHAR(300),
-    image_id VARCHAR(300)
-    FOREIGN KEY (seance) REFERENCES seances(id)
+    image_id VARCHAR(300),
+    FOREIGN KEY (seance_id) REFERENCES seance(id)
 );
 
 CREATE TABLE alignements(
@@ -176,7 +176,7 @@ CREATE TABLE alignements(
     systeme VARCHAR(30),
     user_create INT(10) UNSIGNED,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
-    FOREIGN KEY (activite) REFERENCES activites(id),
+    FOREIGN KEY (activite) REFERENCES activites(id)
 );
 
 SHOW TABLES;
