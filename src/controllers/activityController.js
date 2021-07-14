@@ -13,6 +13,7 @@ exports.add_activity = async function (req, res){
     let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'}
     const activityDTO = req.body
 
+    console.log(activityDTO)
     if(!validateActivityDTO(activityDTO)){
         response.message = 'DTO invalid'
         return res.status(STATUS_RESPONSE.ERROR).json(response)
@@ -79,5 +80,5 @@ exports.delete_activity = async function(req, res){
 
 /*functions controller*/
 function validateActivityDTO(activityDTO){
-    return activityDTO.name && activityDTO.is_match && activityDTO.date_activite && activityDTO.heure && activityDTO.adresse && activityDTO.equipe
+    return activityDTO.name && activityDTO.date_activite && activityDTO.heure && activityDTO.adresse && activityDTO.equipe;
 }

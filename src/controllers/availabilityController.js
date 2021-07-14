@@ -1,5 +1,8 @@
 const Availability = require('../models/AvailabilityModel.js')
 const AvailabilityDAO = require('../models/dao/AvailabilityDAO.js')
+const ActivityDAO = require('../models/dao/ActivityDAO')
+const TeamDAO = require('../models/dao/TeamDAO')
+const PlayerDAO = require('../models/dao/PlayerDAO.js')
 
 const STATUS_RESPONSE = {
     OK:200,
@@ -63,10 +66,25 @@ exports.get_availability_by_id = async function(req, res){
 exports.get_availabilities_by_activity = async function(req, res){
 
     try{
-        const availabilities = await AvailabilityDAO.getAllAvailabilityByActivity(req.params.id)
+        const activity = await ActivityDAO.getActivityById(req.params.id)
+
+        const players = await PlayerDAO.getAllPlayersByTeam(activity.equipe)
+
+        let availabilities = []
+
+        for(let i=0;i<players.length;i++){
+            const availability = await AvailabilityDAO.getAvailabilityByPlayerAndActivity(players[i].id, activity.id)
+            availabilities.push({
+                'availability' : availability ? availability.present : false,
+                'name_player' : players[i].first_name + ' ' + players[i].last_name,
+                'id_player' : players[i].id,
+                'id_availability' : availability ? availability.id : null
+            })
+        }
 
         return res.status(STATUS_RESPONSE.OK).json({code:STATUS_RESPONSE.OK,availabilities})
     }catch(error){
+        console.log(error)
         return res.status(STATUS_RESPONSE.ERROR).json({code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'})
     }
 }
