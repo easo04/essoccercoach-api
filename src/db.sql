@@ -115,4 +115,68 @@ CREATE TABLE disponibilite (
     FOREIGN KEY (activite) REFERENCES activites(id)
 );
 
+/** gestion seances et matchs **/
+
+CREATE TABLE notes(
+    id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    activite INT(10) UNSIGNED,
+    note VARCHAR(300) NOT NULL,
+    user_create INT(10) UNSIGNED,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
+    FOREIGN KEY (activite) REFERENCES activites(id),
+    FOREIGN KEY (user_create) REFERENCES users(id)
+);
+
+CREATE TABLE notes_joueurs(
+    id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    activite INT(10) UNSIGNED,
+    note VARCHAR(300),
+    joueur INT(10) UNSIGNED,
+    time_played INT(10),
+    user_create INT(10) UNSIGNED,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
+    FOREIGN KEY (activite) REFERENCES activites(id),
+    FOREIGN KEY (user_create) REFERENCES users(id),
+    FOREIGN KEY (joueur) REFERENCES joueurs(id)
+);
+
+CREATE TABLE seance(
+    id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    activite INT(10) UNSIGNED,
+    theme VARCHAR(300) NOT NULL,
+    duration VARCHAR(6),
+    user_create INT(10) UNSIGNED,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
+    FOREIGN KEY (activite) REFERENCES activites(id),
+    FOREIGN KEY (user_create) REFERENCES users(id)
+);
+
+CREATE TABLE seance_exercice(
+    id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    seance INT(10) UNSIGNED,
+    title VARCHAR(300) NOT NULL,
+    description VARCHAR(300) NOT NULL,
+    objectifs VARCHAR(300),
+    nbPlayers INT,
+    time VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    image_url VARCHAR(300),
+    image_id VARCHAR(300)
+    FOREIGN KEY (seance) REFERENCES seances(id)
+);
+
+CREATE TABLE alignements(
+    id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    activite INT(10) UNSIGNED,
+    defenseurs VARCHAR(300) NOT NULL,
+    milieux VARCHAR(300) NOT NULL,
+    attaquants VARCHAR(300) NOT NULL,
+    gardien VARCHAR(300) NOT NULL,
+    remplacants VARCHAR(300) NOT NULL,
+    systeme VARCHAR(30),
+    user_create INT(10) UNSIGNED,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
+    FOREIGN KEY (activite) REFERENCES activites(id),
+);
+
 SHOW TABLES;
