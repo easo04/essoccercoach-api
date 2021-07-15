@@ -2,6 +2,7 @@ const Activity = require('../models/ActivityModel')
 const ActivityDAO = require('../models/dao/ActivityDAO')
 const CoachDAO = require('../models/dao/CoachDAO.js')
 const UserService = require('../services/UserService')
+const ActivityService = require('../services/ActivityService')
 
 const STATUS_RESPONSE = {
     OK:200,
@@ -75,6 +76,16 @@ exports.delete_activity = async function(req, res){
         }
         return res.status(STATUS_RESPONSE.OK).json(response)
     }).catch(()=>res.status(STATUS_RESPONSE.ERROR).json(response))
+}
+
+exports.get_summary_activity = async function(req, res){
+    try{
+        const summary = await ActivityService.getActivitySummary(req.params.id)
+
+        return res.status(STATUS_RESPONSE.OK).json({code:STATUS_RESPONSE.OK, summary})
+    }catch(error){
+        return res.status(STATUS_RESPONSE.ERROR).json({code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'})
+    }
 }
 
 /*functions controller*/
