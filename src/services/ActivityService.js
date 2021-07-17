@@ -10,6 +10,10 @@ class ActivityService {
 
         const notes = await NoteDAO.getAllNotesByActivity(idActivity)
 
+        //TODO obtenir les alignements
+
+        //TODO obtenir les seances
+
         return {notes, availabilities}
     }
 

@@ -12,6 +12,8 @@ exports.add_note = async function (req, res){
         return res.status(StatusResponse.ERROR).json(response)
     }
 
+    noteDTO.user_create = req.user.id
+
     try{
         const newNote = new Note(noteDTO)
         const noteId = await NoteDAO.createNote(newNote)
