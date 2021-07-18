@@ -1,4 +1,5 @@
 const ActivityDAO = require("../models/dao/ActivityDAO")
+const AlignementDAO = require("../models/dao/AlignementDAO")
 const AvailabilityDAO = require("../models/dao/AvailabilityDAO")
 const NoteDAO = require("../models/dao/NoteDAO")
 const PlayerDAO = require("../models/dao/PlayerDAO")
@@ -9,12 +10,12 @@ class ActivityService {
         const availabilities = await this.getAvailabilitiesByActivity(idActivity)
 
         const notes = await NoteDAO.getAllNotesByActivity(idActivity)
-
-        //TODO obtenir les alignements
+        
+        const alignement = await AlignementDAO.getAlignementByActivity(idActivity)
 
         //TODO obtenir les seances
 
-        return {notes, availabilities}
+        return {notes, availabilities, alignement}
     }
 
     static async getAvailabilitiesByActivity(idActivity){
