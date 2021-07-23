@@ -1,7 +1,6 @@
 'user strict'
 const sql = require('../database')
 
-//Token object constructor
 class Token {
     constructor(){}
 

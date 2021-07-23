@@ -22,7 +22,7 @@ exports.add_alignement = async function (req, res){
         return res.status(StatusResponse.ERROR).json(response)
     }
 
-    return res.status(STATUS_RESPONSE.ERROR).json(response)
+    return res.status(StatusResponse.ERROR).json(response)
 }
 
 exports.update_alignement = async function (req, res){
@@ -45,7 +45,7 @@ exports.update_alignement = async function (req, res){
         return res.status(StatusResponse.ERROR).json(response)
     }
 
-    return res.status(STATUS_RESPONSE.ERROR).json(response)
+    return res.status(StatusResponse.ERROR).json(response)
 }
 
 exports.get_alignement_by_id = async function(req, res){

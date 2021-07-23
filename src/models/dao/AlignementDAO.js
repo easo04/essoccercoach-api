@@ -9,16 +9,20 @@ class AlignementDAO extends DataBaseDAO{
     static async createAlignement(alignementDTO){
         return await this.create(TABLE_ALIGNEMENT, alignementDTO)
     }
+
     static async deleteAlignementById(id){
         return await this.deleteById(TABLE_ALIGNEMENT, id)
     }
+
     static async getAlignementById(id){
         return await this.getDataById(TABLE_ALIGNEMENT, id)
     }
+
     static async getAlignementByActivity(idActivity){
         const alignement = await this.querySelectFirst(SELECT_ALIGNEMENT_BY_ACTIVITY, idActivity)
         return alignement ? alignement : []
     }
+    
     static updateAlignement(alignementDTO){
         return new Promise((resolve, reject) =>{
             sql.query(`UPDATE ${TABLE_ALIGNEMENT} SET defenseurs = ?, milieux = ?, attaquants = ?, remplacants = ?, gardien = ? ' +

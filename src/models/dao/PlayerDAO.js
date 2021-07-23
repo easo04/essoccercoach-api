@@ -9,12 +9,15 @@ class PlayerDAO extends DataBaseDAO{
     static async createPlayer(coachDTO){
         return await this.create(TABLE_PLAYER, coachDTO)
     }
+
     static async deletePlayerById(id){
         return await this.deleteById(TABLE_PLAYER, id)
     }
+
     static async getPlayerById(id){
         return await this.getDataById(TABLE_PLAYER, id)
     }
+    
     static async getAllPlayersByTeam(idTeam){
         let players = await this.querySelectAll(SELECT_PLAYERS_BY_TEAM, idTeam)
         return players.map(player => toDTO(player))

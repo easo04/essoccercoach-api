@@ -10,19 +10,24 @@ class CoachDAO extends DataBaseDAO{
     static async createCoach(coachDTO){
         return await this.create(TABLE_COACH, coachDTO)
     }
+
     static async deleteCoachById(id){
         return await this.deleteById(TABLE_COACH, id)
     }
+
     static async getCoachById(id){
         return await this.getDataById(TABLE_COACH, id)
     }
+
     static async getAllCoachsByTeam(idTeam){
         let coachs = await this.querySelectAll(SELECT_COACHS_BY_TEAM, idTeam)
         return coachs.map(coach => toDTO(coach))
     }
+
     static async getCoachByUserAndTeam(idTeam, idUser){
         return await this.querySelectFirst(SELECT_COACH_BY_USER_AND_TEAM, [idTeam, idUser])
     }
+    
     static async isAdminOfTeam(idTeam, idUser){
         const coach = await CoachDAO.getCoachByUserAndTeam(idTeam, idUser)
 

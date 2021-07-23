@@ -3,40 +3,35 @@ const jwt = require('jsonwebtoken');
 let User = require('../models/userModel.js')
 let UserDAO = require('../models/dao/UserDAO');
 const UserService = require('../services/UserService.js');
-
-const STATUS_RESPONSE = {
-    OK:200,
-    ERROR:500,
-    ALREADY_LOGGED:400
-}
+const { StatusResponse } = require('../models/StatusResponse.js');
 
 const TOKEN_INVALID = "0"
 
 exports.get_user_by_id = function(req, res) {
     res.header("Access-Control-Allow-Origin", "*")
     let response = {
-        code:STATUS_RESPONSE.ERROR,
+        code:StatusResponse.ERROR,
         status:'Error'
     }
     UserDAO.getUserById(req.params.id).then((user)=>{
         response = {
-            code:STATUS_RESPONSE.OK,
+            code:StatusResponse.OK,
             user:user
         }
         res.json(response)
     }).catch(err => {
-        res.status(STATUS_RESPONSE.ERROR).json(response)
+        res.status(StatusResponse.ERROR).json(response)
     })
 }
 
 exports.subscribe = async function(req, res){
     res.header("Access-Control-Allow-Origin", "*")
     let user = req.body;
-    let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
+    let response = {code:StatusResponse.ERROR, status:'Error', message:''}
 
     if(!user.first_name || !user.last_name || !user.email || !user.password){
         response.message = 'Please provide firts_name/last_name/email/password'
-        return res.status(STATUS_RESPONSE.ERROR).json(response)
+        return res.status(StatusResponse.ERROR).json(response)
     }
 
     try{
@@ -45,7 +40,7 @@ exports.subscribe = async function(req, res){
         const userOne = await UserDAO.getOne(user.email)
         if(userOne){
             response.message = 'user already exist'
-            return res.status(STATUS_RESPONSE.ERROR).json(response)
+            return res.status(StatusResponse.ERROR).json(response)
         }
 
         //if subscription admin, subscription free default
@@ -62,22 +57,22 @@ exports.subscribe = async function(req, res){
         let newUser = new User(user)
         const userId = await UserDAO.subscribe(newUser)
         if(userId){
-            response = {code:STATUS_RESPONSE.OK, message:'user subscribed'}
-            return res.status(STATUS_RESPONSE.OK).json(response)
+            response = {code:StatusResponse.OK, message:'user subscribed'}
+            return res.status(StatusResponse.OK).json(response)
         }
 
     }catch(err){
-        return res.status(STATUS_RESPONSE.ERROR).json(response)
+        return res.status(StatusResponse.ERROR).json(response)
     }
 }
 
 exports.subscribeByAdmin = async function(req, res){
     res.header("Access-Control-Allow-Origin", "*")
     let user = req.body;
-    let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
+    let response = {code:StatusResponse.ERROR, status:'Error', message:''}
     if(!user.first_name || !user.last_name || !user.email){
         response.message = 'Please provide firts_name/last_name/email/password'
-        return res.status(STATUS_RESPONSE.ERROR).json(response)
+        return res.status(StatusResponse.ERROR).json(response)
     }else{
 
         try{
@@ -86,7 +81,7 @@ exports.subscribeByAdmin = async function(req, res){
             const userOne = await UserDAO.getOne(user.email)
             if(userOne){
                 response.message = 'user already exist'
-                return res.status(STATUS_RESPONSE.ERROR).json(response)
+                return res.status(StatusResponse.ERROR).json(response)
             }
 
             //if subscription undefined, free default
@@ -104,12 +99,12 @@ exports.subscribeByAdmin = async function(req, res){
             let newUser = new User(user)
             const userId = await UserDAO.subscribe(newUser)
             if(userId){
-                response = {code:STATUS_RESPONSE.OK, message:'user subscribed'}
-                return res.status(STATUS_RESPONSE.OK).json(response)
+                response = {code:StatusResponse.OK, message:'user subscribed'}
+                return res.status(StatusResponse.OK).json(response)
             }
 
         }catch(err){
-            return res.status(STATUS_RESPONSE.ERROR).json(response)
+            return res.status(StatusResponse.ERROR).json(response)
         }
     }
 }
@@ -117,11 +112,11 @@ exports.subscribeByAdmin = async function(req, res){
 exports.update = async function(req, res){
     res.header("Access-Control-Allow-Origin", "*")
     let user = req.body;
-    let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
+    let response = {code:StatusResponse.ERROR, status:'Error', message:''}
     
     if(!user.first_name || !user.last_name || !user.email){
         response.message = 'Please provide firts_name/last_name/email/password'
-        return res.status(STATUS_RESPONSE.ERROR).json(response)
+        return res.status(StatusResponse.ERROR).json(response)
     }
     
     try{
@@ -130,7 +125,7 @@ exports.update = async function(req, res){
         const userOne = await UserDAO.getOne(user.email)
         if(!userOne){
             response.message = 'user not exist'
-            return res.status(STATUS_RESPONSE.ERROR).json(response)
+            return res.status(StatusResponse.ERROR).json(response)
         }
         
         //save the user
@@ -138,12 +133,12 @@ exports.update = async function(req, res){
         newUser.id = user.id;
         const userId = await UserDAO.update(newUser)
         if(userId){
-            response = {code:STATUS_RESPONSE.OK, message:'user updated'}
-            return res.status(STATUS_RESPONSE.OK).json(response)
+            response = {code:StatusResponse.OK, message:'user updated'}
+            return res.status(StatusResponse.OK).json(response)
         }
 
     }catch(err){
-        return res.status(STATUS_RESPONSE.ERROR).json(response)
+        return res.status(StatusResponse.ERROR).json(response)
     }
 }
 
@@ -151,30 +146,30 @@ exports.login = async function(req, res){
     res.header("Access-Control-Allow-Origin", "*")
 
     const {email, password} = req.body
-    let response = {code:STATUS_RESPONSE.ERROR, status:'Error', message:''}
+    let response = {code:StatusResponse.ERROR, status:'Error', message:''}
     try{
         const userOne = await UserDAO.getOne(email, true)
         if (!userOne || !(await bcrypt.compare(password, userOne.password))){
             response.status = 'EMAIL_PASSWORD_INCORRECT'
             response.message = 'email or password is incorrect'
-            return res.status(STATUS_RESPONSE.ERROR).json(response)
+            return res.status(StatusResponse.ERROR).json(response)
         }
 
         const token = await getUserToken(userOne)
         
         const userResponse = UserService.getUserDetailsDTO(userOne)
 
-        response = {code:STATUS_RESPONSE.OK, user:userResponse, token: token}
-        return res.status(STATUS_RESPONSE.OK).json(response)
+        response = {code:StatusResponse.OK, user:userResponse, token: token}
+        return res.status(StatusResponse.OK).json(response)
     }catch(err){
-        return res.status(STATUS_RESPONSE.ERROR).json(response)
+        return res.status(StatusResponse.ERROR).json(response)
     }
 }
 
 exports.get_all_users = function(req, res, next){
     UserDAO.getAll().then(users => {
         let response = {
-            code:STATUS_RESPONSE.OK,
+            code:StatusResponse.OK,
             users:users
         }
         res.json(response)
@@ -183,22 +178,22 @@ exports.get_all_users = function(req, res, next){
 
 exports.logout = async function(req, res){
     let response = {
-        code:STATUS_RESPONSE.ERROR,
+        code:StatusResponse.ERROR,
         status:'error'
     }
     try{
         await UserDAO.deleteToken(req.user.id)
-        response.code = STATUS_RESPONSE.OK
+        response.code = StatusResponse.OK
         response.status = 'logout'
-        res.status(STATUS_RESPONSE.OK).json(response)
+        res.status(StatusResponse.OK).json(response)
     }catch(err){
-        res.status(STATUS_RESPONSE.ERROR).json(response)
+        res.status(StatusResponse.ERROR).json(response)
     }
 }
 
 exports.updatePassword = async function(req, res){
     let response = {
-        code:STATUS_RESPONSE.ERROR,
+        code:StatusResponse.ERROR,
         status:'error'
     }
     
@@ -207,25 +202,25 @@ exports.updatePassword = async function(req, res){
     if(oldPassword === newPassword){
         response.status = 'PASSWORD_ERROR'
         response.message = 'password error'
-        return res.status(STATUS_RESPONSE.ERROR).json(response)
+        return res.status(StatusResponse.ERROR).json(response)
     }
 
     const userOne = await UserDAO.getOne(email, true)
     if (!userOne || !(await bcrypt.compare(oldPassword, userOne.password))){
         response.status = 'EMAIL_PASSWORD_INCORRECT'
         response.message = 'email or password is incorrect'
-        return res.status(STATUS_RESPONSE.ERROR).json(response)
+        return res.status(StatusResponse.ERROR).json(response)
     }
 
     try{
         newPassword = await bcrypt.hash(newPassword, 10)
         await UserDAO.updatePassword(userOne.id, newPassword)
-        response.code = STATUS_RESPONSE.OK
+        response.code = StatusResponse.OK
         response.status = 'updated'
         response.message = 'password updated'
-        return res.status(STATUS_RESPONSE.OK).json(response)
+        return res.status(StatusResponse.OK).json(response)
     }catch(err){
-        return res.status(STATUS_RESPONSE.ERROR).json(response)
+        return res.status(StatusResponse.ERROR).json(response)
     }
 }
 
