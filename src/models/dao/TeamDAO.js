@@ -1,4 +1,6 @@
-const sql = require('../../database')
+const DataBaseDAO = require('./DataBaseDAO')
+
+const TABLE_TEAMS = 'equipes'
 
 const SELECT_TEAMS_BY_USER_ROLE_COACH = 'SELECT eq.* FROM equipes AS eq INNER JOIN entraineurs AS e ON ' +
                                         'e.equipe = eq.id WHERE e.user = ?'
@@ -14,109 +16,43 @@ const SELECT_TEAMS_BY_PLAYER_AND_TEAM = 'SELECT eq.* FROM equipes AS eq INNER JO
 const SELECT_TEAMS_BY_COACH_AND_TEAM = 'SELECT eq.* FROM equipes AS eq INNER JOIN entraineurs AS e ON ' +
                                         'e.equipe = eq.id WHERE e.user = ? AND eq.id = ?'
 
-class TeamDAO{
-    static createTeam(team){
-        return new Promise((resolve, reject) =>{
-            sql.query("INSERT INTO equipes SET ?", team, function (error, response) {       
-                if(error) {
-                    reject(error)
-                }
-                else{
-                    resolve(response.insertId)
-                }
-            })
-        })
+const SELECT_NB_TEAMS_BY_USER_CREATION = 'SELECT COUNT(*) AS nb_teams FROM equipes WHERE user_creation = ?'
+
+class TeamDAO extends DataBaseDAO{
+    static async createTeam(team){
+        return await this.create(TABLE_TEAMS, team)
     }
 
-    static getTeamById(id){
-        return new Promise((resolve, reject)=>{
-            sql.query("SELECT * FROM equipes WHERE id = ?", id, function(error, response){
-                if(error) {
-                    reject(error)
-                }
-                else{
-                    resolve(response[0])
-                }
-            })
-        })
+    static async getTeamById(id){
+        return await this.getDataById(TABLE_TEAMS, id)
     }
 
-    static removeTeam (id){
-        return new Promise((resolve, reject) =>{
-            sql.query("DELETE FROM equipes WHERE id = ?", [id], function (error, response) {
-                if(error) {
-                    reject(error)
-                }
-                else{
-                    resolve(response)
-                }
-            })
-        })
+    static async removeTeam (id){
+        return await this.deleteById(TABLE_TEAMS, id)
     }
 
-    static getAllTeamsByUserCreated(idUser){
-        return new Promise((resolve, reject)=>{
-            sql.query(SELECT_TEAMS_BY_USER_CREATED, idUser, function(error, response){
-                if(error) {
-                    reject(error)
-                }
-                else{
-                    resolve(response)
-                }
-            })
-        })
+    static async getAllTeamsByUserCreated(idUser){
+        return await this.querySelectAll(SELECT_TEAMS_BY_USER_CREATED, idUser)
     }
 
-    static getAllTeamsByUserRoleCoach(idUser){
-        return new Promise((resolve, reject)=>{
-            sql.query(SELECT_TEAMS_BY_USER_ROLE_COACH, idUser, function(error, response){
-                if(error) {
-                    reject(error)
-                }
-                else{
-                    resolve(response)
-                }
-            })
-        })
+    static async getAllTeamsByUserRoleCoach(idUser){
+        return await this.querySelectAll(SELECT_TEAMS_BY_USER_ROLE_COACH, idUser)
     }
 
-    static getAllTeamsByUserRolePlayer(idUser){
-        return new Promise((resolve, reject)=>{
-            sql.query(SELECT_TEAMS_BY_USER_ROLE_PLAYER, idUser, function(error, response){
-                if(error) {
-                    reject(error)
-                }
-                else{
-                    resolve(response)
-                }
-            })
-        })
+    static async getAllTeamsByUserRolePlayer(idUser){
+        return await this.querySelectAll(SELECT_TEAMS_BY_USER_ROLE_PLAYER, idUser)
     }
 
-    static getTeamByPlayerAndTeam(idUser, idTeam){
-        return new Promise((resolve, reject)=>{
-            sql.query(SELECT_TEAMS_BY_PLAYER_AND_TEAM, [idUser, idTeam], function(error, response){
-                if(error) {
-                    reject(error)
-                }
-                else{
-                    resolve(response[0])
-                }
-            })
-        })
+    static async getTeamByPlayerAndTeam(idUser, idTeam){
+        return await this.querySelectFirst(SELECT_TEAMS_BY_PLAYER_AND_TEAM, [idUser, idTeam])
     }
 
-    static getTeamByCoachAndTeam(idUser, idTeam){
-        return new Promise((resolve, reject)=>{
-            sql.query(SELECT_TEAMS_BY_COACH_AND_TEAM, [idUser, idTeam], function(error, response){
-                if(error) {
-                    reject(error)
-                }
-                else{
-                    resolve(response[0])
-                }
-            })
-        })
+    static async getTeamByCoachAndTeam(idUser, idTeam){
+        return await this.querySelectFirst(SELECT_TEAMS_BY_COACH_AND_TEAM, [idUser, idTeam])
+    }
+
+    static async getNbTeamsByUserCreated(idUser){
+        return await this.querySelectFirst(SELECT_NB_TEAMS_BY_USER_CREATION, idUser)
     }
 }
 

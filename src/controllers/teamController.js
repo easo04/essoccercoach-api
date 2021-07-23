@@ -21,7 +21,7 @@ exports.add_team = async function (req, res){
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
-    if(!UserService.isUserAdminOrPremium(req.user)){
+    if(!UserService.isUserAdminOrPremium(user)){
         response.message = 'User role invalid'
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
@@ -29,9 +29,12 @@ exports.add_team = async function (req, res){
     try{
         const {teamId, coachId} = await TeamService.createTeam(teamDTO, user)
 
-        response = {code:STATUS_RESPONSE.OK, message:'team created', teamId, coachId}
+        const canCreateATeam = await UserService.canAddTeam(user)
+
+        response = {code:STATUS_RESPONSE.OK, message:'team created', teamId, coachId, canCreateATeam}
         return res.status(STATUS_RESPONSE.OK).json(response)
     }catch(error){
+        console.log(error)
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 }
@@ -88,9 +91,7 @@ exports.get_summary_teams = async function(req, res){
     try{
         const teams =  await TeamService.getAllTeamsByUser(idCurrentuser)
 
-        const canAddTeam = UserService.isUserAdminOrPremium(req.user) 
-
-        response = {code:STATUS_RESPONSE.OK, status:'Succes', canAddTeam, teams}
+        response = {code:STATUS_RESPONSE.OK, status:'Succes', teams}
 
         return res.status(STATUS_RESPONSE.OK).json(response)
     }catch(error){

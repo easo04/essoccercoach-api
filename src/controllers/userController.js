@@ -157,11 +157,12 @@ exports.login = async function(req, res){
 
         const token = await getUserToken(userOne)
         
-        const userResponse = UserService.getUserDetailsDTO(userOne)
+        const userResponse = await UserService.getUserDetailsDTO(userOne)
 
         response = {code:StatusResponse.OK, user:userResponse, token: token}
         return res.status(StatusResponse.OK).json(response)
     }catch(err){
+        console.log(err)
         return res.status(StatusResponse.ERROR).json(response)
     }
 }

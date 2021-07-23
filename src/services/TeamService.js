@@ -2,6 +2,8 @@ const PlayerDAO = require('../models/dao/PlayerDAO.js')
 const CoachDAO = require('../models/dao/CoachDAO.js')
 const TeamDAO = require('../models/dao/TeamDAO.js')
 const ActivityDAO = require('../models/dao/ActivityDAO.js')
+const Team = require('../models/TeamModel.js')
+const Coach = require('../models/CoachModel.js')
 
 const USER_ROLES = {
     COACH: 'COACH',
@@ -57,11 +59,10 @@ class TeamService{
     
     static async setDetailTeamsDTO(teams, teamsWithRole, user){
         for(let i = 0; i < teamsWithRole.length; i++){
-            const teamDTO = await this.toDTO(teamsWithRole[0], user)
+            const teamDTO = await this.toDTO(teamsWithRole[i], user)
             teams.push(teamDTO)
         }
     }
-    
     
     static async toDTO(team, user){
         let teamDTO = team
