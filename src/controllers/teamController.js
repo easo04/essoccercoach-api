@@ -26,23 +26,14 @@ exports.add_team = async function (req, res){
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
-    let {name, club} = teamDTO
-
     try{
-        const newTeam = new Team(name, club, user.id, user.user_name)
-        const teamId = await TeamDAO.createTeam(newTeam)
-        if(teamId){
-            const newCoach = new Coach(user.first_name, user.last_name, 'ENT', true, teamId)
-            const coachId = CoachDAO.createCoach(newCoach)
+        const {teamId, coachId} = await TeamService.createTeam(teamDTO, user)
 
-            response = {code:STATUS_RESPONSE.OK, message:'team created', teamId, coachId}
-            return res.status(STATUS_RESPONSE.OK).json(response)
-        }
+        response = {code:STATUS_RESPONSE.OK, message:'team created', teamId, coachId}
+        return res.status(STATUS_RESPONSE.OK).json(response)
     }catch(error){
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
-
-    return res.status(STATUS_RESPONSE.ERROR).json(response)
 }
 
 exports.get_team_by_id = async function(req, res){

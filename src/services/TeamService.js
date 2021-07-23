@@ -8,7 +8,24 @@ const USER_ROLES = {
     PLAYER: 'PLAYER'
 }
 
+const COACH_ROLE_DEFAULT = 'ENT'
+
 class TeamService{
+
+    static async createTeam(teamDTO, user){
+        const {name, club} = teamDTO
+        const newTeam = new Team(name, club, user.id, user.user_name)
+        const teamId = await TeamDAO.createTeam(newTeam)
+
+        if(!teamId){
+            return {}
+        }
+
+        const newCoach = new Coach(user.first_name, user.last_name, COACH_ROLE_DEFAULT, true, teamId, user.id)
+        const coachId = await CoachDAO.createCoach(newCoach)
+
+        return {teamId, coachId}
+    }
 
     static async getAllTeamsByUser(idCurrentuser){
         let listTeamsByUser = []
