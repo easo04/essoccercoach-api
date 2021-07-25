@@ -75,7 +75,10 @@ exports.delete_activity = async function(req, res){
             message:'activity deleted'
         }
         return res.status(STATUS_RESPONSE.OK).json(response)
-    }).catch(()=>res.status(STATUS_RESPONSE.ERROR).json(response))
+    }).catch((error)=>{
+        console.log(error)
+        res.status(STATUS_RESPONSE.ERROR).json(response)
+    })
 }
 
 exports.get_summary_activity = async function(req, res){

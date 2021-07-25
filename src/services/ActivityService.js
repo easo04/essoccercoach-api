@@ -7,7 +7,9 @@ const PlayerDAO = require("../models/dao/PlayerDAO")
 class ActivityService {
 
     static async getActivitySummary(idActivity){
-        const availabilities = await this.getAvailabilitiesByActivity(idActivity)
+        const activity_infos = await ActivityDAO.getActivityById(idActivity)
+
+        const availabilities = await this.getAvailabilitiesByActivity(activity_infos)
 
         const notes = await NoteDAO.getAllNotesByActivity(idActivity)
         
@@ -15,12 +17,11 @@ class ActivityService {
 
         //TODO obtenir les seances
 
-        return {notes, availabilities, alignement}
+        return {notes, availabilities, alignement, activity_infos}
     }
 
-    static async getAvailabilitiesByActivity(idActivity){
+    static async getAvailabilitiesByActivity(activity){
         try{
-            const activity = await ActivityDAO.getActivityById(idActivity)
     
             const players = await PlayerDAO.getAllPlayersByTeam(activity.equipe)
     

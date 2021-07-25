@@ -16,6 +16,18 @@ class AvailabilityDAO extends DataBaseDAO{
         return await this.deleteById(TABLE_AVAILABILITY, id)
     }
 
+    static async deleteAvailabilityByActivity(idActivity){
+        return new Promise((resolve, reject) =>{
+            sql.query(`DELETE FROM ${TABLE_AVAILABILITY} WHERE activite = ?`, [idActivity], function (error, response) {
+                if(error) {
+                    reject(error)
+                }else{
+                    resolve(response)
+                }
+            })
+        })
+    }
+
     static async getAvailabilityById(id){
         return await this.getDataById(TABLE_AVAILABILITY, id)
     }

@@ -1,4 +1,5 @@
 const DataBaseDAO = require('./DataBaseDAO')
+const sql = require('../../database')
 
 const TABLE_NOTE = 'notes'
 
@@ -11,6 +12,18 @@ class NoteDAO extends DataBaseDAO{
 
     static async deleteNoteById(id){
         return await this.deleteById(TABLE_NOTE, id)
+    }
+
+    static async deleteNoteByActivity(idActivity){
+        return new Promise((resolve, reject) =>{
+            sql.query(`DELETE FROM ${TABLE_NOTE} WHERE activite = ?`, [idActivity], function (error, response) {
+                if(error) {
+                    reject(error)
+                }else{
+                    resolve(response)
+                }
+            })
+        })
     }
 
     static async getNoteById(id){
