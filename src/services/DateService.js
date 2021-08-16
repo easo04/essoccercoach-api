@@ -25,7 +25,7 @@ class DateService{
      * @param {*} langue la langue à utiliser 
      */
     static getDateFormat(date, langue){
-        const options = {weekday: "long", year: "numeric", month: "short", day: "numeric"}
+        const options = {weekday: "long", year: "numeric", month: "long", day: "numeric"}
         return Intl.DateTimeFormat(langue, options).format(date)
     }
 

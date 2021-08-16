@@ -32,6 +32,7 @@ class NoteDAO extends DataBaseDAO{
     
     static async getAllNotesByActivity(idActivity){
         const notes = await this.querySelectAll(SELECT_NOTES_BY_ACTIVITY, idActivity)
+        
         return notes
     }
 }

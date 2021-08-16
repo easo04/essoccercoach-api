@@ -87,6 +87,7 @@ exports.get_summary_activity = async function(req, res){
 
         return res.status(STATUS_RESPONSE.OK).json({code:STATUS_RESPONSE.OK, summary})
     }catch(error){
+        console.log(error)
         return res.status(STATUS_RESPONSE.ERROR).json({code:STATUS_RESPONSE.ERROR, status:'Error', message:'error'})
     }
 }

@@ -1,5 +1,5 @@
 const TeamDAO = require("../models/dao/TeamDAO")
-const TeamService = require("./TeamService")
+const UserDAO = require("../models/dao/UserDAO")
 
 class UserService{
     static isUserAdminOrPremium(user){
@@ -29,6 +29,12 @@ class UserService{
         console.log(nb_teams)
 
         return this.isUserAdminOrPremium(user) && nb_teams < process.env.NB_MAXIMUM_TEAMS_PER_USER
+    }
+
+    static async getUserNameById(id){
+        const user = await UserDAO.getUserById(id)
+
+        return `${user.first_name} ${user.last_name}`
     }
 }
 
