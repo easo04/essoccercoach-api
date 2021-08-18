@@ -1,5 +1,6 @@
 const DataBaseDAO = require('./DataBaseDAO')
 const sql = require('../../database')
+const AvailabilityDAO = require('./AvailabilityDAO')
 
 const TABLE_PLAYER = 'joueurs'
 
@@ -11,6 +12,8 @@ class PlayerDAO extends DataBaseDAO{
     }
 
     static async deletePlayerById(id){
+        await AvailabilityDAO.deleteAvailabilitiesByPlayer(id)
+        
         return await this.deleteById(TABLE_PLAYER, id)
     }
 

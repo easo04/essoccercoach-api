@@ -61,12 +61,6 @@ exports.delete_player = async function(req, res){
         code:STATUS_RESPONSE.ERROR,
         status:'Error'
     }
-    
-    /*const isAdminOfTeam = await CoachDAO.isAdminOfTeam(equipe, req.user.id)
-    if(!isAdminOfTeam){
-        response.message = 'Acces denied'
-        return res.status(STATUS_RESPONSE.ERROR).json(response)
-    }*/
 
     PlayerDAO.deletePlayerById(req.params.id).then(() => {
         response = {
@@ -74,7 +68,10 @@ exports.delete_player = async function(req, res){
             message:'player deleted'
         }
         return res.status(STATUS_RESPONSE.OK).json(response)
-    }).catch(()=>res.status(STATUS_RESPONSE.ERROR).json(response))
+    }).catch((error)=>{
+        console.log(error)
+        res.status(STATUS_RESPONSE.ERROR).json(response)
+    })
 }
 
 /*functions controller*/
