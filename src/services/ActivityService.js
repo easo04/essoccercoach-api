@@ -11,7 +11,9 @@ class ActivityService {
     static async getActivitySummary(idActivity){
         const activity_infos = await ActivityDAO.getActivityById(idActivity)
 
-        const availabilities = await this.getAvailabilitiesByActivity(activity_infos)
+        const players = await PlayerDAO.getAllPlayersByTeam(activity_infos.equipe)
+
+        const availabilities = await this.getAvailabilitiesByActivity(activity_infos, players)
 
         const notes = await NoteDAO.getAllNotesByActivity(idActivity)
         let notesDTO = []
@@ -21,17 +23,15 @@ class ActivityService {
         }
         
         const alignement = await AlignementDAO.getAlignementByActivity(idActivity)
+        let alignementDTO = this.getAlignementDTO(alignement)
 
         //TODO obtenir les seances
 
-        return {'notes' : notesDTO, availabilities, alignement, activity_infos}
+        return {'notes' : notesDTO, availabilities, 'alignement' : alignementDTO, activity_infos, players}
     }
 
-    static async getAvailabilitiesByActivity(activity){
+    static async getAvailabilitiesByActivity(activity, players){
         try{
-    
-            const players = await PlayerDAO.getAllPlayersByTeam(activity.equipe)
-    
             let availabilities = []
     
             for(let i=0;i<players.length;i++){
@@ -56,6 +56,12 @@ class ActivityService {
             date_web_created : DateService.getDateWeb(note.created_at),
             user_creation : await UserService.getUserNameById(note.user_create)
         }
+    }
+
+    static getAlignementDTO(alignement){
+        let alignementDTO = {};
+        
+        return alignementDTO
     }
 }
 

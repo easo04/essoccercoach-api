@@ -20,7 +20,7 @@ class AlignementDAO extends DataBaseDAO{
 
     static async getAlignementByActivity(idActivity){
         const alignement = await this.querySelectFirst(SELECT_ALIGNEMENT_BY_ACTIVITY, idActivity)
-        return alignement ? alignement : []
+        return alignement || {}
     }
     
     static updateAlignement(alignementDTO){
