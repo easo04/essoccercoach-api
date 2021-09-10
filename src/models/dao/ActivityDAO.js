@@ -31,9 +31,8 @@ class ActivityDAO extends DataBaseDAO{
 }
 
 function toDTO(activity){
-    const {name, adversaire, heure, id, adresse, resultat, heure_arrive, link_adresse, equipe} = activity
+    const {name, adversaire, heure, id, adresse, resultat, heure_arrive, link_adresse, equipe, date_activite} = activity
     const is_match = activity.is_match === 1 ? true : false
-    const date_activite = DateService.getDateFormatFR(activity.date_activite)
     return {name, adversaire, heure, id, adresse, resultat, is_match, date_activite, heure_arrive, link_adresse, equipe}
 }
 
