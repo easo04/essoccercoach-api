@@ -33,6 +33,7 @@ exports.add_activity = async function (req, res){
             return res.status(STATUS_RESPONSE.OK).json(response)
         }
     }catch(error){
+        console.log(error)
         return res.status(STATUS_RESPONSE.ERROR).json(response)
     }
 
@@ -94,5 +95,6 @@ exports.get_summary_activity = async function(req, res){
 
 /*functions controller*/
 function validateActivityDTO(activityDTO){
-    return activityDTO.name && activityDTO.date_activite && activityDTO.heure && activityDTO.adresse && activityDTO.equipe;
+    return activityDTO.name && activityDTO.date_activite && activityDTO.heure && activityDTO.adresse 
+        && (activityDTO.is_match === false || (activityDTO.is_match === true && activityDTO.equipe));
 }
