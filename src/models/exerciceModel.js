@@ -120,8 +120,8 @@ Exercice.getSameCategory = function(category, id){
 }
 Exercice.updateExercice = function(exercice){
     return new Promise((resolve, reject) =>{
-        sql.query("UPDATE exercices SET title = ?, description = ?, objectifs = ?, disposition = ?,  nbPlayers = ?, category = ? WHERE id = ?", 
-            [exercice.title, exercice.description, exercice.objectifs, exercice.disposition, exercice.nbPlayers, exercice.category, exercice.id], function (err, res) {
+        sql.query("UPDATE exercices SET title = ?, description = ?, objectifs = ?, disposition = ?,  nbPlayers = ?, category = ?, image_url = ?, image_id = ? WHERE id = ?", 
+            [exercice.title, exercice.description, exercice.objectifs, exercice.disposition, exercice.nbPlayers, exercice.category,  exercice.image_id, exercice.image_url, exercice.id], function (err, res) {
             if(err) {
                 console.log("error: ", err)
                 reject(err)
