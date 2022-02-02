@@ -3,7 +3,7 @@ const sql = require('../../database')
 
 const TABLE_NOTE = 'notes'
 
-const SELECT_NOTES_BY_ACTIVITY = 'SELECT * FROM notes WHERE activite = ?'
+const SELECT_NOTES_BY_ACTIVITY = 'SELECT * FROM notes WHERE activite = ? ORDER BY created_at DESC'
 
 class NoteDAO extends DataBaseDAO{
     static async createNote(noteDTO){

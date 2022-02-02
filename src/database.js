@@ -29,13 +29,4 @@ mySqlConnection.on('connection', function (connection) {
 
 })
 
-/*mySqlConnection.connect((err) =>{
-    if(err){
-        console.log(err)
-        return
-    }else{
-        console.log('database connected')
-    }
-})*/
-
 module.exports = mySqlConnection
